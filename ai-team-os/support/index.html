@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-team-os Support｜ai-team-os 使用者支援</title>
+<meta name="description" content="ai-team-os support page / ai-team-os 支援頁. Bug reports, AI content reports, security contact, known limitations, versions and updates.">
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a2f; --panel2:#17213b;
+    --text:#eef3ff; --muted:#aeb9d4; --line:#2a3657;
+    --accent:#7aa2ff; --accent2:#7be0c3; --warn:#ffd27a;
+    --danger:#ff8d9c; --ok:#8de1a8; --code:#0a0f1d;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:radial-gradient(circle at 80% -10%, rgba(122,162,255,.18), transparent 38%),
+               radial-gradient(circle at 3% 8%, rgba(123,224,195,.10), transparent 32%),
+               var(--bg);
+    color:var(--text); line-height:1.75;
+    overflow-wrap:anywhere; word-break:break-word;
+  }
+  a{color:#9fc0ff}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:940px;margin:0 auto;padding:40px 20px 88px}
+  header.top{
+    padding:30px;border:1px solid var(--line);border-radius:20px;
+    background:linear-gradient(145deg,rgba(23,33,59,.96),rgba(18,26,47,.92));
+    box-shadow:0 16px 40px rgba(0,0,0,.28);
+  }
+  .eyebrow{color:var(--accent2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}
+  h1{font-size:31px;line-height:1.2;margin:8px 0 6px}
+  h1 .zh{display:block;font-size:22px;color:var(--muted);font-weight:700;margin-top:4px}
+  .meta{color:var(--muted);font-size:14px;margin-top:12px}
+  .meta b{color:var(--text)}
+  .langbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .langbar a{
+    padding:8px 14px;border:1px solid var(--line);border-radius:999px;
+    background:var(--panel2);font-size:14px;text-decoration:none;font-weight:700
+  }
+  .langbar a:hover{background:#1d2a4a;text-decoration:none}
+  section{
+    margin:20px 0;padding:26px;border:1px solid var(--line);
+    background:rgba(18,26,47,.78);border-radius:18px;
+  }
+  h2{font-size:24px;margin:0 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  h3{font-size:17px;margin:26px 0 8px;color:#cde0ff}
+  h3:first-of-type{margin-top:14px}
+  p,li,td,th{color:#dbe4fa;font-size:15.5px}
+  ul,ol{padding-left:22px}
+  li{margin:5px 0}
+  code{
+    font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;
+    color:#bfe3d4;background:#0a0f1d;border:1px solid #23304f;
+    border-radius:5px;padding:1px 5px;font-size:13.5px
+  }
+  pre{
+    padding:15px;overflow-x:auto;background:var(--code);border:1px solid var(--line);
+    border-radius:12px;color:#d8e4ff;white-space:pre-wrap;word-break:break-word;font-size:13.5px;
+    font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;
+  }
+  .callout{padding:15px 17px;border-left:4px solid var(--accent);background:#10182c;border-radius:10px;margin:16px 0}
+  .callout.ok{border-left-color:var(--ok)}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout.danger{border-left-color:var(--danger)}
+  .callout p:last-child{margin-bottom:0}
+  .callout p:first-child{margin-top:0}
+  .tablebox{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:12px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:#10172a;color:#fff;font-weight:700}
+  tr:last-child td{border-bottom:0}
+  .divider{margin:44px 0 0;text-align:center;color:var(--muted);font-size:13px;letter-spacing:.2em}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+  .toc{margin:0;padding:0;list-style:none;columns:2;column-gap:22px}
+  .toc li{margin:3px 0;font-size:14px;break-inside:avoid}
+  .todo{color:#ffe1a3;font-weight:700}
+  @media(max-width:620px){
+    .wrap{padding:24px 14px 64px}
+    header.top{padding:22px}
+    h1{font-size:25px}
+    h1 .zh{font-size:19px}
+    section{padding:20px 16px}
+    h2{font-size:21px}
+    .toc{columns:1}
+    p,li,td,th{font-size:15px}
+  }
+  @media print{
+    body{background:#fff;color:#111}
+    section,header.top{border-color:#ccc;background:#fff}
+    p,li,td,th,h1,h2,h3{color:#111}
+    a{color:#0645ad}
+    .langbar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Support · 使用者支援</div>
+  <h1>ai-team-os Support
+    <span class="zh">ai-team-os 使用者支援</span>
+  </h1>
+  <div class="meta">
+    <b>Last updated / 最後更新日期：</b>2026-09-11<br>
+    <b>Publisher / 發行者：</b>te56789<br>
+    <b>Current version / 目前版本：</b>0.1.0<br>
+    <b>Support email / 支援信箱：</b><a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a>
+  </div>
+  <div class="langbar">
+    <a href="#en">English</a>
+    <a href="#zh">繁體中文</a>
+    <a href="#en-3">Report AI content</a>
+  </div>
+</header>
+
+<!-- ==================== ENGLISH ==================== -->
+<section id="en">
+  <h2>English</h2>
+
+  <ol class="toc">
+    <li><a href="#en-1">1. Before you report</a></li>
+    <li><a href="#en-2">2. Report a bug</a></li>
+    <li><a href="#en-3">3. Report inappropriate AI-generated content</a></li>
+    <li><a href="#en-4">4. Security vulnerabilities</a></li>
+    <li><a href="#en-5">5. Privacy questions</a></li>
+    <li><a href="#en-6">6. Known limitations</a></li>
+    <li><a href="#en-7">7. Versions and updates</a></li>
+    <li><a href="#en-8">8. Contact summary</a></li>
+  </ol>
+
+  <h3 id="en-1">1. Before you report</h3>
+  <p>Two checks solve most reports:</p>
+  <ul>
+    <li><b>Open the health check page in the application.</b> It reports what the application can and cannot reach on this machine — the data folder, git, and whether the local model service answers.</li>
+    <li><b>If an <code>agent</code> step failed:</b> confirm a local Ollama service is running and that the model name in the step is written as <code>ollama/&lt;model&gt;</code>. This release recognises no other form.</li>
+  </ul>
+
+  <h3 id="en-2">2. Report a bug</h3>
+  <p>Send the report to <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a> with the subject line <code>[ai-team-os] bug</code>.</p>
+  <p class="todo">待補 — a public issue tracker will be linked here once it is open.</p>
+  <p>Please include:</p>
+  <ul>
+    <li>ai-team-os version (shown in the application);</li>
+    <li>Windows version and edition;</li>
+    <li>the step kind that failed — <code>command</code>, <code>write_file</code>, <code>git_commit</code>, <code>agent</code>, <code>http</code> or <code>browser</code>;</li>
+    <li>the run identifier, if the failure happened during a run;</li>
+    <li>steps to reproduce, starting from a fresh launch;</li>
+    <li>what you expected, and what happened instead;</li>
+    <li>relevant error messages, with secrets removed.</li>
+  </ul>
+  <div class="callout danger">
+    <p><b>Never include</b> API keys, access tokens, passwords, webhook URLs, private prompts, personal information or confidential project content. Replace anything sensitive with a placeholder before sending.</p>
+  </div>
+
+  <h3 id="en-3">3. Report inappropriate AI-generated content</h3>
+  <p>An <code>agent</code> step generates text with a model. That output is not reviewed in advance and can be inaccurate, offensive or otherwise unsuitable. If you receive AI-generated content you consider inappropriate, report it.</p>
+  <p><b>How to report, from inside the application:</b> main window → <b>Privacy, support and reporting</b> → <b>Report inappropriate AI output</b>.</p>
+  <ol>
+    <li>Pick one of six reasons: dangerous, hateful, sexual, deceptive, privacy-related, other.</li>
+    <li>Optionally fill in the run identifier and the step identifier, and write a short note about what happened.</li>
+    <li>Press <b>preview what will be sent</b>. The complete payload is shown before anything is written, together with a list of what was removed from your note.</li>
+    <li>Press <b>produce the report file</b>. You get a report identifier (a UUID) and a file at <code>&lt;data folder&gt;\reports\ai-report-&lt;id&gt;.json</code> (the data folder is <code>%APPDATA%\ai-team-os</code> for the installer build, <code>%USERPROFILE%\.ai-team-os</code> for the Store build).</li>
+  </ol>
+  <p><b>A report carries identifiers only</b> — report id, timestamp, application version, reason, run id, step id and your note. It carries no prompt, no file content, no conversation and no credential. Your note is scrubbed of anything shaped like an API key, an e-mail address, a URL, a Windows or UNC path, or a run of 32 or more characters, and it is truncated at 500 characters.</p>
+  <p><b>This release has no reporting server.</b> A button that pretends to have sent something is worse than no button, so the application produces a file and says so. Attach that file to an e-mail to <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a> with the subject line <code>[ai-team-os] AI content report</code>. If you cannot open the application, send the same details by e-mail directly.</p>
+  <p><b>What happens next.</b> Each report gets a reply quoting its report identifier. Reports are triaged by severity, and the outcome is recorded and sent back to you. Where the problem comes from the model service you configured rather than from ai-team-os, the reply will say so and point to that service's own reporting channel.</p>
+
+  <h3 id="en-4">4. Security vulnerabilities</h3>
+  <p>Email <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a> with the subject line <code>[ai-team-os] security</code>. Please do not post a vulnerability in a public thread before it has been fixed. Describe the issue, the affected version, and the impact; a proof of concept is welcome but must not contain real secrets.</p>
+
+  <h3 id="en-5">5. Privacy questions</h3>
+  <p>See the <a href="../privacy/">privacy policy</a>. In short: the application runs locally, has no account, sends no telemetry, and transmits data only where a task step you wrote tells it to. Questions to the same address, subject line <code>[ai-team-os] privacy</code>.</p>
+
+  <h3 id="en-6">6. Known limitations</h3>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>Limitation</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>The two distribution channels do not share a data folder</td>
+        <td>The installer build keeps its data in <code>%APPDATA%\ai-team-os</code>. The Microsoft Store (MSIX) build keeps its data in <code>%USERPROFILE%\.ai-team-os</code> instead, because MSIX virtualises writes to <code>%APPDATA%</code> and deletes them on uninstall. If you move from one channel to the other, the new build starts with an empty data folder: it does not see your existing vault, runs or artifacts. Use <code>npm run backup</code> to carry them across, or point <code>TEAMOS_HOME</code> at the folder you want both builds to use.</td>
+      </tr>
+      <tr>
+        <td>Local Ollama required for <code>agent</code> steps</td>
+        <td>The application does not bundle or install Ollama. In this release the <code>agent</code> step recognises only models addressed as <code>ollama/&lt;model&gt;</code>. Other providers need an API key, and keys held in the vault are never handed to the execution layer in plaintext, so they cannot drive an <code>agent</code> step in this release.</td>
+      </tr>
+      <tr>
+        <td>Microsoft Edge required for <code>browser</code> steps</td>
+        <td>Browser steps use Playwright driving the Edge already installed on the system. No browser binary is downloaded. Without Edge, browser steps cannot run.</td>
+      </tr>
+      <tr>
+        <td>No code signing on the direct-download channel</td>
+        <td>Builds published in the public releases repository are not signed with a code-signing certificate, so Windows SmartScreen warns on first run. The Microsoft Store copy is signed by Microsoft during certification and does not produce that warning.</td>
+      </tr>
+      <tr>
+        <td>Windows 10 / 11, x64 only</td>
+        <td>No ARM64 build, no macOS build, no Linux build.</td>
+      </tr>
+      <tr>
+        <td>Single user, single machine</td>
+        <td>No cloud sync, no shared workspace, no team accounts, no remote administration.</td>
+      </tr>
+      <tr>
+        <td>No plugin or module marketplace</td>
+        <td>A task specification is data, not code. There is no third-party extension mechanism and no add-on store.</td>
+      </tr>
+      <tr>
+        <td><code>browser</code> steps take verbs, not scripts</td>
+        <td>Six verbs only: <code>goto</code>, <code>click</code>, <code>fill</code>, <code>read</code>, <code>wait</code>, <code>screenshot</code>. Arbitrary browser scripting is not accepted.</td>
+      </tr>
+      <tr>
+        <td>Updates are not installed automatically</td>
+        <td>The update check tells you a newer version exists. It does not download or install it for you. This is deliberate.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="en-7">7. Versions and updates</h3>
+  <ul>
+    <li><b>Current version:</b> 0.1.0.</li>
+    <li><b>Microsoft Store channel:</b> updates arrive through the Store once a new submission is published.</li>
+    <li><b>Direct-download channel:</b> the application checks whether a newer release exists and tells you. You download and install it yourself.</li>
+    <li><b>Before updating:</b> the application supports backup and restore of its data folder, and the data folder carries a version of its own so an upgrade knows what it is reading. Taking a backup before a version change is recommended.</li>
+    <li class="todo">待補 — a public release-notes page will be linked here.</li>
+  </ul>
+
+  <h3 id="en-8">8. Contact summary</h3>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>What</th><th>Where</th><th>Subject line</th></tr></thead>
+    <tbody>
+      <tr><td>Bug report</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] bug</code></td></tr>
+      <tr><td>Inappropriate AI content</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] AI content report</code></td></tr>
+      <tr><td>Security vulnerability</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] security</code></td></tr>
+      <tr><td>Privacy question</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] privacy</code></td></tr>
+      <tr><td>Anything else</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] support</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="todo">待補 — separate privacy@ / security@ / support@ addresses on a dedicated domain are planned. One address serves all five categories today.</p>
+</section>
+
+<div class="divider">· · ·</div>
+
+<!-- ==================== 繁體中文 ==================== -->
+<section id="zh">
+  <h2>繁體中文</h2>
+
+  <ol class="toc">
+    <li><a href="#zh-1">一、回報之前先做兩件事</a></li>
+    <li><a href="#zh-2">二、回報問題</a></li>
+    <li><a href="#zh-3">三、回報不當的 AI 生成內容</a></li>
+    <li><a href="#zh-4">四、安全漏洞</a></li>
+    <li><a href="#zh-5">五、隱私問題</a></li>
+    <li><a href="#zh-6">六、已知限制</a></li>
+    <li><a href="#zh-7">七、版本與更新</a></li>
+    <li><a href="#zh-8">八、聯絡方式一覽</a></li>
+  </ol>
+
+  <h3 id="zh-1">一、回報之前先做兩件事</h3>
+  <p>大部分的回報，這兩步就能解決：</p>
+  <ul>
+    <li><b>先開程式裡的體檢頁。</b>它會列出在這台機器上，哪些東西接得到、哪些接不到 —— 資料家、git，以及本機模型服務有沒有回應。</li>
+    <li><b>如果是 <code>agent</code> 步驟失敗：</b>確認本機 Ollama 服務有在跑，而且步驟裡的模型名稱寫成 <code>ollama/&lt;模型名&gt;</code>。本版只認這種寫法。</li>
+  </ul>
+
+  <h3 id="zh-2">二、回報問題</h3>
+  <p>寄到 <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a>，主旨開頭寫 <code>[ai-team-os] bug</code>。</p>
+  <p class="todo">待補 —— 公開的問題追蹤頁開放後會放在這裡。</p>
+  <p>請附上：</p>
+  <ul>
+    <li>ai-team-os 版本（程式裡看得到）；</li>
+    <li>Windows 版本與版本類型；</li>
+    <li>出問題的步驟種類 —— <code>command</code>、<code>write_file</code>、<code>git_commit</code>、<code>agent</code>、<code>http</code> 或 <code>browser</code>;</li>
+    <li>如果是執行途中出事，附上該次執行編號；</li>
+    <li>從重新啟動程式開始算的重現步驟；</li>
+    <li>你預期會發生什麼、實際發生了什麼；</li>
+    <li>相關的錯誤訊息，祕密的部分先拿掉。</li>
+  </ul>
+  <div class="callout danger">
+    <p><b>絕對不要附上</b>API 金鑰、存取 token、密碼、webhook 網址、私人 prompt、個人資料或機密專案內容。敏感的部分寄出前先換成佔位符號。</p>
+  </div>
+
+  <h3 id="zh-3">三、回報不當的 AI 生成內容</h3>
+  <p><code>agent</code> 步驟會用模型即時產生文字。那些輸出沒有經過事前審閱，可能不正確、可能冒犯人、也可能不適合。如果你收到你認為不當的 AI 生成內容，請回報。</p>
+  <p><b>怎麼回報，直接在程式裡做：</b>主畫面 →「<b>隱私、支援與回報</b>」→「<b>回報不當的 AI 產出</b>」。</p>
+  <ol>
+    <li>從六個理由裡選一個：危險或可能造成傷害、仇恨或騷擾、性內容、詐騙或誤導、隱私、其他。</li>
+    <li>可以補上該次執行編號與步驟編號，再寫幾句說明。</li>
+    <li>按「<b>先看會送出什麼</b>」。整份內容會在任何東西被寫下來之前顯示出來，並列出你的說明裡有哪些片段被洗掉。</li>
+    <li>按「<b>產生回報檔</b>」。你會拿到一組回報編號（UUID），檔案在 <code>&lt;資料夾&gt;\reports\ai-report-&lt;編號&gt;.json</code>（安裝檔版本的資料夾是 <code>%APPDATA%\ai-team-os</code>，商店版是 <code>%USERPROFILE%\.ai-team-os</code>）。</li>
+  </ol>
+  <p><b>一筆回報只帶編號</b> —— 回報編號、時間、程式版本、理由、執行編號、步驟編號，以及你寫的說明。沒有 prompt、沒有檔案內容、沒有完整對話、沒有憑證。你寫的說明還會再洗一次：看起來像 API 金鑰、電子郵件、網址、Windows 或 UNC 路徑的片段，以及 32 字以上的連續字串，一律換掉，超過 500 字截斷。</p>
+  <p><b>這一版沒有回報伺服器。</b>一個「假裝已經送出去了」的按鈕，比沒有按鈕更糟，所以程式產生的是一個檔案，而且會直說。把那個檔附在信裡寄到 <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a>，主旨開頭寫 <code>[ai-team-os] AI content report</code>。如果你打不開程式，直接把同樣的內容寫在信裡寄過來也可以。</p>
+  <p><b>後續怎麼處理。</b>每一筆回報都會回信並引用它的回報編號。回報依嚴重程度分級處理，處置結果會記錄下來並回覆給你。如果問題來自你自己設定的模型服務、不是來自 ai-team-os，回信會說明，並指出該服務自己的回報管道。</p>
+
+  <h3 id="zh-4">四、安全漏洞</h3>
+  <p>寄到 <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a>，主旨開頭寫 <code>[ai-team-os] security</code>。修好之前請不要把漏洞貼在公開討論串。請描述問題、受影響的版本與影響範圍；歡迎附概念驗證，但裡面不可以有真實祕密。</p>
+
+  <h3 id="zh-5">五、隱私問題</h3>
+  <p>請看<a href="../privacy/">隱私權政策</a>。簡短講：這支程式跑在本機、沒有帳號、不送遙測，只有在你自己寫的任務步驟指定時才會把資料送出去。有問題寄同一個信箱，主旨開頭寫 <code>[ai-team-os] privacy</code>。</p>
+
+  <h3 id="zh-6">六、已知限制</h3>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>限制</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>兩條通路的資料夾不共用</td>
+        <td>安裝檔版本的資料放在 <code>%APPDATA%\ai-team-os</code>；Microsoft Store（MSIX）版本放在 <code>%USERPROFILE%\.ai-team-os</code>。會分開是因為 MSIX 會把寫進 <code>%APPDATA%</code> 的東西虛擬化，而且解除安裝時一起刪掉。所以你如果從一條通路換到另一條，新版本會從一個空的資料夾開始 —— 看不到你原本的金鑰、執行紀錄與產物。要帶過去請用 <code>npm run backup</code>，或是用 <code>TEAMOS_HOME</code> 讓兩邊指到同一個資料夾。</td>
+      </tr>
+      <tr>
+        <td><code>agent</code> 步驟需要本機 Ollama</td>
+        <td>本程式不內含也不會幫你安裝 Ollama。本版的 <code>agent</code> 步驟只認得寫成 <code>ollama/&lt;模型名&gt;</code> 的模型。別家 provider 要金鑰，而 Vault 裡的金鑰不會以明文交給執行層，所以本版沒辦法用它們跑 <code>agent</code> 步驟。</td>
+      </tr>
+      <tr>
+        <td><code>browser</code> 步驟需要 Microsoft Edge</td>
+        <td>瀏覽器步驟是用 Playwright 驅動系統上已經裝好的 Edge，不會另外下載瀏覽器。沒有 Edge 就跑不了瀏覽器步驟。</td>
+      </tr>
+      <tr>
+        <td>直接下載的通路沒有程式碼簽章</td>
+        <td>公開釋出倉庫發佈的版本沒有用程式碼簽章憑證簽，第一次執行時 Windows SmartScreen 會跳警告。Microsoft Store 的版本在認證過程中由 Microsoft 簽署，不會有這個警告。</td>
+      </tr>
+      <tr>
+        <td>只支援 Windows 10／11 x64</td>
+        <td>沒有 ARM64 版、沒有 macOS 版、沒有 Linux 版。</td>
+      </tr>
+      <tr>
+        <td>單人單機</td>
+        <td>沒有雲端同步、沒有共用工作區、沒有團隊帳號、沒有遠端管理。</td>
+      </tr>
+      <tr>
+        <td>沒有外掛或模組商店</td>
+        <td>任務規格是資料，不是程式。沒有第三方擴充機制，也沒有附加元件商店。</td>
+      </tr>
+      <tr>
+        <td><code>browser</code> 步驟收動詞，不收腳本</td>
+        <td>只有六個動詞：<code>goto</code>、<code>click</code>、<code>fill</code>、<code>read</code>、<code>wait</code>、<code>screenshot</code>。不接受任意瀏覽器腳本。</td>
+      </tr>
+      <tr>
+        <td>更新不會自動安裝</td>
+        <td>更新檢查只會告訴你有新版本，不會幫你下載或安裝。這是刻意的。</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 id="zh-7">七、版本與更新</h3>
+  <ul>
+    <li><b>目前版本：</b>0.1.0。</li>
+    <li><b>Microsoft Store 通路：</b>新的 submission 發布後，更新由 Store 推送。</li>
+    <li><b>直接下載通路：</b>程式會檢查有沒有新版本並告訴你，下載與安裝由你自己來。</li>
+    <li><b>更新前：</b>本程式支援資料家的備份與還原，資料家本身也帶版本，升級時知道自己在讀什麼。換版本前建議先備份。</li>
+    <li class="todo">待補 —— 公開的版本說明頁會放在這裡。</li>
+  </ul>
+
+  <h3 id="zh-8">八、聯絡方式一覽</h3>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>事由</th><th>寄到</th><th>主旨開頭</th></tr></thead>
+    <tbody>
+      <tr><td>問題回報</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] bug</code></td></tr>
+      <tr><td>不當 AI 內容</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] AI content report</code></td></tr>
+      <tr><td>安全漏洞</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] security</code></td></tr>
+      <tr><td>隱私問題</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] privacy</code></td></tr>
+      <tr><td>其他</td><td>linsevenlight@gmail.com</td><td><code>[ai-team-os] support</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="todo">待補 —— 之後會在自有網域上分開 privacy@／security@／support@。目前五類都走同一個信箱。</p>
+</section>
+
+<footer>
+  ai-team-os Support · ai-team-os 使用者支援 · Last updated 2026-09-11 · Publisher te56789
+</footer>
+
+</div>
+</body>
+</html>
