@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-team-os Privacy Policy｜ai-team-os 隱私權政策</title>
+<meta name="description" content="ai-team-os privacy policy / ai-team-os 隱私權政策. Local-only Windows desktop application. No account, no cloud backend, no telemetry.">
+<style>
+  :root{
+    --bg:#0b1020; --panel:#121a2f; --panel2:#17213b;
+    --text:#eef3ff; --muted:#aeb9d4; --line:#2a3657;
+    --accent:#7aa2ff; --accent2:#7be0c3; --warn:#ffd27a;
+    --danger:#ff8d9c; --ok:#8de1a8; --code:#0a0f1d;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:radial-gradient(circle at 80% -10%, rgba(122,162,255,.18), transparent 38%),
+               radial-gradient(circle at 3% 8%, rgba(123,224,195,.10), transparent 32%),
+               var(--bg);
+    color:var(--text); line-height:1.75;
+    overflow-wrap:anywhere; word-break:break-word;
+  }
+  a{color:#9fc0ff}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:940px;margin:0 auto;padding:40px 20px 88px}
+  header.top{
+    padding:30px;border:1px solid var(--line);border-radius:20px;
+    background:linear-gradient(145deg,rgba(23,33,59,.96),rgba(18,26,47,.92));
+    box-shadow:0 16px 40px rgba(0,0,0,.28);
+  }
+  .eyebrow{color:var(--accent2);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:800}
+  h1{font-size:31px;line-height:1.2;margin:8px 0 6px}
+  h1 .zh{display:block;font-size:22px;color:var(--muted);font-weight:700;margin-top:4px}
+  .meta{color:var(--muted);font-size:14px;margin-top:12px}
+  .meta b{color:var(--text)}
+  .langbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .langbar a{
+    padding:8px 14px;border:1px solid var(--line);border-radius:999px;
+    background:var(--panel2);font-size:14px;text-decoration:none;font-weight:700
+  }
+  .langbar a:hover{background:#1d2a4a;text-decoration:none}
+  section{
+    margin:20px 0;padding:26px;border:1px solid var(--line);
+    background:rgba(18,26,47,.78);border-radius:18px;
+  }
+  h2{font-size:24px;margin:0 0 6px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  h3{font-size:17px;margin:26px 0 8px;color:#cde0ff}
+  h3:first-of-type{margin-top:14px}
+  p,li,td,th{color:#dbe4fa;font-size:15.5px}
+  ul{padding-left:22px}
+  li{margin:5px 0}
+  code{
+    font-family:"Cascadia Code","SFMono-Regular",Consolas,monospace;
+    color:#bfe3d4;background:#0a0f1d;border:1px solid #23304f;
+    border-radius:5px;padding:1px 5px;font-size:13.5px
+  }
+  .callout{padding:15px 17px;border-left:4px solid var(--accent);background:#10182c;border-radius:10px;margin:16px 0}
+  .callout.ok{border-left-color:var(--ok)}
+  .callout.warn{border-left-color:var(--warn)}
+  .callout p:last-child{margin-bottom:0}
+  .callout p:first-child{margin-top:0}
+  .tablebox{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:12px}
+  table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:460px}
+  th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{background:#10172a;color:#fff;font-weight:700}
+  tr:last-child td{border-bottom:0}
+  .divider{margin:44px 0 0;text-align:center;color:var(--muted);font-size:13px;letter-spacing:.2em}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+  .toc{margin:0;padding:0;list-style:none;columns:2;column-gap:22px}
+  .toc li{margin:3px 0;font-size:14px;break-inside:avoid}
+  @media(max-width:620px){
+    .wrap{padding:24px 14px 64px}
+    header.top{padding:22px}
+    h1{font-size:25px}
+    h1 .zh{font-size:19px}
+    section{padding:20px 16px}
+    h2{font-size:21px}
+    .toc{columns:1}
+    p,li,td,th{font-size:15px}
+  }
+  @media print{
+    body{background:#fff;color:#111}
+    section,header.top{border-color:#ccc;background:#fff}
+    p,li,td,th,h1,h2,h3{color:#111}
+    a{color:#0645ad}
+    .langbar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Privacy Policy · 隱私權政策</div>
+  <h1>ai-team-os Privacy Policy
+    <span class="zh">ai-team-os 隱私權政策</span>
+  </h1>
+  <div class="meta">
+    <b>Last updated / 最後更新日期：</b>2026-09-11<br>
+    <b>Publisher / 發行者：</b>te56789<br>
+    <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
+  </div>
+  <div class="langbar">
+    <a href="#en">English</a>
+    <a href="#zh">繁體中文</a>
+    <a href="#contact-en">Contact</a>
+  </div>
+</header>
+
+<!-- ==================== ENGLISH ==================== -->
+<section id="en">
+  <h2>English</h2>
+
+  <div class="callout ok">
+    <p><b>In one paragraph.</b> ai-team-os runs entirely on your own Windows PC. There is no account, no sign-in, no developer-operated server and no telemetry — the developer receives no data from the application at all. Data leaves your computer only when a task step that you wrote yourself tells it to, and only to the destination you named in that step. Everything else stays in one local folder that you can delete at any time.</p>
+  </div>
+
+  <ol class="toc">
+    <li><a href="#en-1">1. Scope</a></li>
+    <li><a href="#en-2">2. No accounts, no cloud service</a></li>
+    <li><a href="#en-3">3. No telemetry</a></li>
+    <li><a href="#en-4">4. What is stored on your device</a></li>
+    <li><a href="#en-5">5. What can leave your device</a></li>
+    <li><a href="#en-6">6. Credentials</a></li>
+    <li><a href="#en-7">7. Third-party services you configure</a></li>
+    <li><a href="#en-8">8. Files</a></li>
+    <li><a href="#en-9">9. Local commands</a></li>
+    <li><a href="#en-10">10. Live generative AI</a></li>
+    <li><a href="#en-11">11. Data sharing and sale</a></li>
+    <li><a href="#en-12">12. Retention and deletion</a></li>
+    <li><a href="#en-13">13. Your controls</a></li>
+    <li><a href="#en-14">14. Children</a></li>
+    <li><a href="#en-15">15. Changes to this policy</a></li>
+    <li><a href="#contact-en">16. Contact</a></li>
+  </ol>
+
+  <h3 id="en-1">1. Scope</h3>
+  <p>ai-team-os ("the application") is a Windows desktop application published by te56789. This policy describes how the application handles data on the user's own device. It applies to the copy distributed through the Microsoft Store and to builds distributed from the project's public releases repository.</p>
+
+  <h3 id="en-2">2. No accounts, no cloud service</h3>
+  <p>The application has no sign-in, no user account and no developer-operated server. The developer does not host, receive or store user content. There is no cloud sync, no multi-user collaboration and no remote administration.</p>
+
+  <h3 id="en-3">3. No telemetry</h3>
+  <p>The application sends no usage data, analytics, crash reports or diagnostic pings to the developer. The telemetry package in the source tree is intentionally empty. There is no analytics setting to turn off, because nothing is collected.</p>
+
+  <h3 id="en-4">4. What is stored on your device</h3>
+  <p>All application data lives in one local data folder. By default that folder is <code>%APPDATA%\ai-team-os</code> for the installer build, and <code>%USERPROFILE%\.ai-team-os</code> for the Microsoft Store (MSIX) build — the Store build deliberately keeps its data outside <code>%APPDATA%</code> so that uninstalling the app never deletes it. You can move it by setting the <code>TEAMOS_HOME</code> environment variable. The folder contains:</p>
+  <ul>
+    <li><code>vault\vault.db</code> — stored credentials, encrypted with Windows DPAPI under your Windows user account;</li>
+    <li><code>runs\runs.db</code> — run records, step events, the cost ledger and task-specification versions;</li>
+    <li>an artifact content store — the files and outputs produced by task steps;</li>
+    <li>a project register — the projects and git worktrees you have registered;</li>
+    <li><code>platform.json</code> — application settings;</li>
+    <li>browser sign-in state used by <code>browser</code> steps, encrypted with Windows DPAPI;</li>
+    <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
+  </ul>
+  <p>No part of this folder is transmitted anywhere by the application.</p>
+
+  <h3 id="en-5">5. What can leave your device, and only when you ask for it</h3>
+  <p>A task specification is data that you author: you define the steps in the task builder or import them as JSON, and the application executes them. Exactly three step kinds can send anything off the machine, and each one sends it to a destination that you wrote into your own specification.</p>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>Step kind</th><th>What is sent</th><th>Where it goes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>agent</code></td>
+        <td>The prompt text and the project context you selected.</td>
+        <td>The model service you configured. In this release the <code>agent</code> step only accepts models addressed as <code>ollama/&lt;model&gt;</code>, served by a local Ollama installation on the same machine — so in the default configuration this data does not leave the computer.</td>
+      </tr>
+      <tr>
+        <td><code>http</code></td>
+        <td>The request you defined in the step.</td>
+        <td>The URL you wrote in the specification.</td>
+      </tr>
+      <tr>
+        <td><code>browser</code></td>
+        <td>The navigation, and whatever the six permitted verbs do on the page you named.</td>
+        <td>The host you wrote in the specification. Three separate host-allowlist checks run before a navigation is performed.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The content sent is the content you placed in the specification: prompt text, the files you selected, and the project context you selected. The application does not scan your drive, does not upload files you did not reference, and does not add data of its own to these requests.</p>
+
+  <h3 id="en-6">6. Credentials</h3>
+  <p>Credentials are held in a local vault encrypted with Windows DPAPI and tied to your Windows user account. The vault supports three profile layers — system, user and project — and credential rotation. Plaintext secrets are never written to logs, never rendered in the user interface and never placed on a command line.</p>
+  <p>You may choose to store credentials for third-party services. The kinds of credential the vault can hold include API keys for DeepSeek, Meta/Llama, DashScope/Qwen, Z.ai/GLM, Gemini, OpenAI and Anthropic services, and notification webhook URLs of the kind used by Telegram or Slack. A webhook URL is itself a secret and is stored as one.</p>
+  <div class="callout warn">
+    <p>None of these services is enabled by default, and ai-team-os is not affiliated with, endorsed by, or an official client of any of them. Storing a credential does not by itself transmit anything: a credential is used only when a step you wrote calls the service it belongs to.</p>
+  </div>
+
+  <h3 id="en-7">7. Third-party services you configure</h3>
+  <p>When a step you wrote sends data to a third-party service, that service's own terms and privacy policy govern what happens to the data. Review them before configuring a service. The developer of ai-team-os has no visibility into and no control over that processing.</p>
+
+  <h3 id="en-8">8. Files</h3>
+  <p>The application reads and writes files inside the projects you register and inside its own data folder. A <code>write_file</code> step writes where the specification says to write. A <code>git_commit</code> step commits in the git worktree assigned to that seat. Files are read only when a step you wrote refers to them. The application never uploads the contents of your drive.</p>
+
+  <h3 id="en-9">9. Local commands</h3>
+  <p>A <code>command</code> step runs a command line that you wrote into the task specification, on your machine, under your Windows account. The application does not download programs and run them, and does not fetch code from the internet to execute. High-risk actions stop and wait for your approval before running; an action beyond its granted permission level is refused and produces no side effect.</p>
+
+  <h3 id="en-10">10. Live generative AI</h3>
+  <p>An <code>agent</code> step produces text generated by a model in response to your prompt. Generated output is not reviewed by the developer before you see it, and it can be inaccurate, offensive or otherwise unsuitable. Do not rely on generated output without checking it.</p>
+  <p>You can report inappropriate AI-generated content from inside the application: main window → <b>Privacy, support and reporting</b> → <b>Report inappropriate AI output</b>. Pick a reason, optionally add the run and step identifiers and a short note, then press <b>preview what will be sent</b> to read the exact payload before anything is written.</p>
+  <p>A report carries identifiers only — report id, timestamp, application version, reason, run id, step id and your note. It carries no prompt, no file content, no conversation and no credential. Your note is additionally scrubbed of anything that looks like an API key, an e-mail address, a URL, a Windows or UNC path, or a long unbroken string, and it is truncated at 500 characters; the application shows you what it removed.</p>
+  <p>The report is written as a file in <code>reports\</code> inside your data folder. This release has no reporting server, so nothing is transmitted: you decide whether to send that file to the support address. The support page describes the same route for anyone who cannot open the application.</p>
+
+  <h3 id="en-11">11. Data sharing and sale</h3>
+  <p>The developer receives no user data, and therefore shares none and sells none. Data goes only to the destinations named in your own task specifications.</p>
+
+  <h3 id="en-12">12. Retention and deletion</h3>
+  <p>Everything is kept locally, and kept until you delete it. Deleting the data folder removes all application data, including the vault, run history, cost ledger and artifacts. Backup and restore is manual and is triggered by you; a backup is written where you tell the application to write it. There is no server-side copy for you to request the deletion of.</p>
+
+  <h3 id="en-13">13. Your controls</h3>
+  <ul>
+    <li>Delete the data folder, or any file inside it, at any time.</li>
+    <li>Remove or rotate any stored credential.</li>
+    <li>Decide which steps exist in a task. A step you do not write never runs.</li>
+    <li>Approve or refuse each high-risk action at the approval gate.</li>
+    <li>Leave unattended mode off; it is off by default. Unattended mode can schedule work, retry when quota returns and resume after a crash, but it approves nothing — it stops at every approval gate.</li>
+    <li>Set a budget ceiling so a run stops at a cost you chose.</li>
+    <li>Open <b>Privacy, support and reporting</b> at any time to see, computed from the build you are running, which step kinds can send anything off this machine and to where, what is stored locally, and which of it is encrypted.</li>
+    <li>Report AI output you consider inappropriate, and read the exact payload before it is written.</li>
+  </ul>
+
+  <h3 id="en-14">14. Children</h3>
+  <p>ai-team-os is a developer tool and is not directed to children. Third-party services you configure have their own age requirements, which you are responsible for meeting.</p>
+
+  <h3 id="en-15">15. Changes to this policy</h3>
+  <p>This page is updated when the application's data handling changes. The <b>Last updated</b> date at the top of the page reflects the most recent change.</p>
+
+  <h3 id="contact-en">16. Contact</h3>
+  <div class="callout">
+    <p><b>Email:</b> <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a></p>
+    <p>Use the same address for privacy questions, security reports and general support. Please do not include API keys, access tokens, passwords or confidential project content in any message.</p>
+  </div>
+</section>
+
+<div class="divider">· · ·</div>
+
+<!-- ==================== 繁體中文 ==================== -->
+<section id="zh">
+  <h2>繁體中文</h2>
+
+  <div class="callout ok">
+    <p><b>一段話講完。</b>ai-team-os 完全跑在你自己的 Windows 電腦上。沒有帳號、沒有登入、沒有開發者架設的伺服器，也沒有任何遙測 —— 開發者收不到這支程式的任何資料。資料只有在你自己寫的任務步驟叫它送出去時才會離開這台電腦，而且只送到那個步驟裡你自己寫的目的地。其餘全部留在一個本機資料夾，你隨時可以刪掉。</p>
+  </div>
+
+  <ol class="toc">
+    <li><a href="#zh-1">一、適用範圍</a></li>
+    <li><a href="#zh-2">二、沒有帳號，也沒有雲端服務</a></li>
+    <li><a href="#zh-3">三、沒有遙測</a></li>
+    <li><a href="#zh-4">四、存在你電腦裡的東西</a></li>
+    <li><a href="#zh-5">五、什麼會離開這台電腦</a></li>
+    <li><a href="#zh-6">六、憑證</a></li>
+    <li><a href="#zh-7">七、你自己設定的第三方服務</a></li>
+    <li><a href="#zh-8">八、檔案</a></li>
+    <li><a href="#zh-9">九、本機命令</a></li>
+    <li><a href="#zh-10">十、即時生成式 AI</a></li>
+    <li><a href="#zh-11">十一、資料分享與販售</a></li>
+    <li><a href="#zh-12">十二、保存與刪除</a></li>
+    <li><a href="#zh-13">十三、你可以控制的事</a></li>
+    <li><a href="#zh-14">十四、兒童</a></li>
+    <li><a href="#zh-15">十五、政策更新</a></li>
+    <li><a href="#contact-zh">十六、聯絡方式</a></li>
+  </ol>
+
+  <h3 id="zh-1">一、適用範圍</h3>
+  <p>ai-team-os（以下稱「本程式」）是 te56789 發行的 Windows 桌面應用程式。本政策說明本程式在使用者自己的電腦上怎麼處理資料，適用於 Microsoft Store 通路的版本，以及本專案公開釋出倉庫發佈的版本。</p>
+
+  <h3 id="zh-2">二、沒有帳號，也沒有雲端服務</h3>
+  <p>本程式沒有登入、沒有使用者帳號，開發者也沒有架設任何伺服器。開發者不代管、不接收、不保存使用者的內容。沒有雲端同步、沒有多人協作、沒有遠端管理。</p>
+
+  <h3 id="zh-3">三、沒有遙測</h3>
+  <p>本程式不會把使用資料、分析數據、當機報告或診斷訊號送回給開發者。原始碼裡的 telemetry 套件是刻意留空的。這裡沒有「關閉分析」的開關，因為根本沒有收集。</p>
+
+  <h3 id="zh-4">四、存在你電腦裡的東西</h3>
+  <p>本程式的資料全部放在同一個本機資料夾。安裝檔版本的預設位置是 <code>%APPDATA%\ai-team-os</code>；Microsoft Store（MSIX）版本則是 <code>%USERPROFILE%\.ai-team-os</code> —— 商店版刻意把資料放在 <code>%APPDATA%</code> 之外，這樣解除安裝就不會把它一起刪掉。你可以設定 <code>TEAMOS_HOME</code> 環境變數把它搬到別的地方。這個資料夾裡有：</p>
+  <ul>
+    <li><code>vault\vault.db</code> —— 已儲存的憑證，用 Windows DPAPI 綁你的 Windows 使用者帳戶加密；</li>
+    <li><code>runs\runs.db</code> —— 執行紀錄、步驟事件、費用帳本，以及任務規格的版本；</li>
+    <li>產物內容庫 —— 任務步驟產生的檔案與輸出；</li>
+    <li>專案名冊 —— 你登記過的專案與 git worktree;</li>
+    <li><code>platform.json</code> —— 程式設定；</li>
+    <li><code>browser</code> 步驟用的瀏覽器登入狀態，同樣用 Windows DPAPI 加密；</li>
+    <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
+  </ul>
+  <p>這個資料夾裡的任何部分，本程式都不會往外送。</p>
+
+  <h3 id="zh-5">五、什麼會離開這台電腦，而且只在你叫它送的時候</h3>
+  <p>任務規格是你自己寫的資料：你在「任務建立」畫面定義步驟，或是匯入 JSON，本程式負責照著執行。只有三種步驟會把東西送出這台機器，而且每一種都是送到你自己在規格裡寫的目的地。</p>
+  <div class="tablebox">
+  <table>
+    <thead><tr><th>步驟種類</th><th>送出什麼</th><th>送去哪裡</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>agent</code></td>
+        <td>你的 prompt 文字，以及你選定的專案上下文。</td>
+        <td>你設定的模型服務。本版的 <code>agent</code> 步驟只認得寫成 <code>ollama/&lt;模型名&gt;</code> 的模型，由同一台電腦上的本機 Ollama 提供 —— 所以在預設設定下，這些資料根本不會離開這台電腦。</td>
+      </tr>
+      <tr>
+        <td><code>http</code></td>
+        <td>你在步驟裡定義的那個請求。</td>
+        <td>你在規格裡寫的那個網址。</td>
+      </tr>
+      <tr>
+        <td><code>browser</code></td>
+        <td>導向動作，以及六個許可動詞在你指定的頁面上做的事。</td>
+        <td>你在規格裡寫的主機。導向之前會先過三道主機清單檢查。</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p>送出去的內容，就是你自己放進規格裡的內容：prompt 文字、你挑的檔案、你挑的專案上下文。本程式不會掃你的硬碟，不會上傳你沒有指名的檔案，也不會自己在這些請求裡加料。</p>
+
+  <h3 id="zh-6">六、憑證</h3>
+  <p>憑證放在本機的 Vault，用 Windows DPAPI 加密，綁定你的 Windows 使用者帳戶。Vault 支援 system、user、project 三層 profile，也支援輪換。明文祕密不會寫進 log、不會顯示在畫面上、不會出現在命令列。</p>
+  <p>你可以自行選擇要不要存第三方服務的憑證。Vault 能存的憑證種類包含 DeepSeek、Meta/Llama、DashScope/Qwen、Z.ai/GLM、Gemini、OpenAI、Anthropic 等服務的 API 金鑰，以及 Telegram、Slack 這一類的通知 webhook 網址。webhook 網址本身就是祕密，所以也當祕密存。</p>
+  <div class="callout warn">
+    <p>上面這些服務沒有一個是預設啟用的。ai-team-os 與其中任何一家都沒有隸屬、合作或官方授權關係，也不是任何一家的官方用戶端。存了憑證不等於送出任何東西：憑證只有在你寫的步驟去呼叫它所屬的服務時才會被用到。</p>
+  </div>
+
+  <h3 id="zh-7">七、你自己設定的第三方服務</h3>
+  <p>當你寫的步驟把資料送到第三方服務時，那筆資料之後怎麼處理，由該服務自己的條款與隱私權政策決定。設定前請先讀過。ai-team-os 的開發者看不到也管不到那一段處理。</p>
+
+  <h3 id="zh-8">八、檔案</h3>
+  <p>本程式會在你登記的專案內，以及自己的資料夾內讀寫檔案。<code>write_file</code> 步驟寫在規格指定的位置；<code>git_commit</code> 步驟在那個席次被分配到的 git worktree 裡 commit。檔案只有在你寫的步驟指名它時才會被讀取。本程式不會上傳你硬碟裡的內容。</p>
+
+  <h3 id="zh-9">九、本機命令</h3>
+  <p><code>command</code> 步驟執行的，是你自己寫進任務規格的那一行命令，在你的電腦上、用你的 Windows 帳戶執行。本程式不會下載程式回來執行，也不會從網路上抓程式碼來跑。高風險動作會先停下來等你批准；超出授予權限等級的動作會被拒絕，而且不產生任何副作用。</p>
+
+  <h3 id="zh-10">十、即時生成式 AI</h3>
+  <p><code>agent</code> 步驟會依你的 prompt，由模型即時產生文字。你看到的生成內容沒有經過開發者事先審閱，可能不正確、可能冒犯人，也可能不適合你的用途。不要不檢查就直接採用。</p>
+  <p>你可以直接在程式裡回報不當的 AI 生成內容：主畫面 →「<b>隱私、支援與回報</b>」→「<b>回報不當的 AI 產出</b>」。選一個理由，可以補上該次執行編號與步驟編號、再寫幾句說明，然後按「<b>先看會送出什麼</b>」，在任何東西被寫下來之前先把整份內容看過。</p>
+  <p>一筆回報只帶編號：回報編號、時間、程式版本、理由、執行編號、步驟編號，以及你寫的說明。沒有 prompt、沒有檔案內容、沒有完整對話、沒有憑證。你寫的說明還會再洗一次 —— 看起來像 API 金鑰、電子郵件、網址、Windows 或 UNC 路徑的片段，以及過長的連續字串，一律換掉，超過 500 字截斷；洗掉了什麼會列給你看。</p>
+  <p>回報會寫成資料夾裡 <code>reports\</code> 的一個檔案。這一版沒有回報伺服器，所以不會有任何東西被送出去：要不要把那個檔寄到支援信箱，由你決定。支援頁寫著同一條路，給打不開程式的人看。</p>
+
+  <h3 id="zh-11">十一、資料分享與販售</h3>
+  <p>開發者收不到任何使用者資料，因此沒有東西可以分享，也沒有東西可以販售。資料只會去你自己在任務規格裡指名的目的地。</p>
+
+  <h3 id="zh-12">十二、保存與刪除</h3>
+  <p>全部存在本機，而且會一直留著，直到你自己刪掉。刪掉資料夾就等於刪掉全部的程式資料，包含 Vault、執行紀錄、費用帳本與產物。備份還原是手動的，由你自己觸發；備份寫到你指定的位置。伺服器端沒有副本，所以也沒有「請開發者刪除」這件事。</p>
+
+  <h3 id="zh-13">十三、你可以控制的事</h3>
+  <ul>
+    <li>隨時刪掉整個資料夾，或裡面的任何一個檔案。</li>
+    <li>移除或輪換任何一筆已存的憑證。</li>
+    <li>決定一個任務裡有哪些步驟。你沒寫的步驟永遠不會跑。</li>
+    <li>在批准閘門逐項批准或拒絕高風險動作。</li>
+    <li>保持無人值守模式關閉，它預設就是關的。無人值守可以排程、額度回來自動再試、崩潰自動續跑，但它不批准任何事 —— 跑到要批准就會停。</li>
+    <li>設定預算上限，讓一趟執行在你指定的金額停下來。</li>
+    <li>隨時打開「隱私、支援與回報」，看你這一版<b>實際</b>算出來的結果：哪幾種步驟會把東西送出這台機器、送去哪裡、哪些資料只留在本機、哪些是加密的。</li>
+    <li>回報你認為不當的 AI 產出，而且在它被寫下來之前先看過整份內容。</li>
+  </ul>
+
+  <h3 id="zh-14">十四、兒童</h3>
+  <p>ai-team-os 是開發者工具，並非針對兒童設計。你自行設定的第三方服務各有年齡限制，是否符合由你自己負責。</p>
+
+  <h3 id="zh-15">十五、政策更新</h3>
+  <p>本程式的資料處理方式一有更動，這一頁就會更新。頁面最上方的<b>最後更新日期</b>就是最近一次更動的日期。</p>
+
+  <h3 id="contact-zh">十六、聯絡方式</h3>
+  <div class="callout">
+    <p><b>電子郵件：</b><a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a></p>
+    <p>隱私問題、安全漏洞回報與一般支援都用同一個信箱。來信請不要附上 API 金鑰、存取 token、密碼或機密專案內容。</p>
+  </div>
+</section>
+
+<footer>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-09-11 · Publisher te56789<br>
+  This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
+</footer>
+
+</div>
+</body>
+</html>
