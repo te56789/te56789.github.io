@@ -163,33 +163,43 @@
     <li><code>platform.json</code> and <code>modules.json</code> — application settings, and which modules you have switched off;</li>
     <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
   </ul>
-  <p>The application never uploads this folder. Pieces of it travel only along the routes listed in section 5: for example, the earlier messages of a conversation go with your next chat message, and when memory is switched on, remembered items relevant to a task go with an <code>agent</code> step's prompt.</p>
+  <p>The application never uploads this folder. Pieces of it travel only along the routes listed in section 5: for example, the earlier messages of a conversation go with your next chat message, and when memory is switched on, the remembered items that seat may read go with an <code>agent</code> step's prompt.</p>
 
   <h3 id="en-5">5. What can leave your device, and only when you ask for it</h3>
-  <p>A task specification is data that you author: you define the steps in the task builder or import them as JSON, and the application executes them. Four step kinds can send something off the machine, and each one sends it to a destination that you wrote into your own specification or chose yourself.</p>
+  <p>A task specification is data that you author: you define the steps in the task builder or import them as JSON, and the application executes them. The step kinds below can send something off the machine. Four of them do so by design; <code>command</code> steps and the checks of the merge queue do so when the program they run uses the network.</p>
   <div class="tablebox">
   <table>
     <thead><tr><th>Step kind</th><th>What is sent</th><th>Where it goes</th></tr></thead>
     <tbody>
       <tr>
         <td><code>agent</code></td>
-        <td>The step's instructions, the content of the files and diffs that seat can read, and, when memory is switched on, the remembered items relevant to the task.</td>
-        <td>The model service you chose for that step. A local Ollama model, which the built-in templates use by default, keeps all of this on your computer. A cloud model is used only if you pick one and store its API key; the data then goes to that provider.</td>
+        <td>The step's instructions, the content of the files and diffs that seat can read, and, when memory is switched on, the remembered items that seat may read in the workspace (disputed ones first, then by score, until a size budget is reached; they are not picked per task).</td>
+        <td>The model service you chose for that step. A local Ollama model, which the built-in templates use by default, keeps all of this on your computer as long as it is reached at its default local address. A cloud model is used only if you pick one and its API key is available, from the vault or from an environment variable; the data then goes to that provider. If you point a provider elsewhere with an environment variable such as <code>OLLAMA_BASE_URL</code> (another machine on your network, a proxy), the data goes to that address.</td>
       </tr>
       <tr>
         <td><code>http</code></td>
-        <td>The request you defined in the step.</td>
-        <td>The URL you wrote in the specification.</td>
+        <td>The request you defined in the step. If the server answers with a 307 or 308 redirect, the same request, body included, is sent again to the new address.</td>
+        <td>The URL you wrote in the specification. Redirects are followed, so a request can end up at a host that is not in your specification.</td>
       </tr>
       <tr>
         <td><code>browser</code></td>
-        <td>The navigation, and whatever the six permitted verbs do on the page you named.</td>
-        <td>The host you wrote in the specification. Three separate host-allowlist checks run before a navigation is performed.</td>
+        <td>The navigation, whatever the six permitted verbs do on the page you named, and the saved sign-in state: its cookies go out with the page's requests.</td>
+        <td>The host you wrote in the specification. Three separate host-allowlist checks run before a navigation is performed, and a redirect to another host stops the step. The pages themselves load images, scripts and other requests from wherever the website chooses; those are not blocked.</td>
       </tr>
       <tr>
         <td><code>push</code></td>
         <td>The commits that the remote does not have yet: file contents, commit messages, and author names and e-mail addresses.</td>
         <td>The git remote you set up in git. The specification can refer to it only by name (for example <code>origin</code>). Every push stops for your approval, and the approval shows the remote's address with any credentials masked.</td>
+      </tr>
+      <tr>
+        <td><code>command</code></td>
+        <td>Whatever the program you ran sends, for example git exchanging data with a remote, or a script uploading a file.</td>
+        <td>Wherever that program connects: <code>git fetch</code> or <code>git pull</code> to the git remote, <code>npm install</code> to the package registry. The application does not know or limit where it connects. See section 9.</td>
+      </tr>
+      <tr>
+        <td>Merge-queue checks</td>
+        <td>Merging itself happens in the repository on your computer. The check commands written in the specification run before and after each merge and send whatever those programs send.</td>
+        <td>The same as <code>command</code>.</td>
       </tr>
     </tbody>
   </table>
@@ -202,7 +212,7 @@
       <tr>
         <td>Chat</td>
         <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the remembered items.</td>
-        <td>The model you picked for that conversation. A local Ollama model keeps it on your computer; a cloud model sends it to that provider.</td>
+        <td>The model you picked for that conversation. A local Ollama model keeps it on your computer; a cloud model sends it to that provider. If the model's address was changed with an environment variable, the data goes to that address.</td>
       </tr>
       <tr>
         <td>Notifications (off by default)</td>
@@ -213,6 +223,16 @@
         <td>Update check (off by default)</td>
         <td>A request for the update description file, made when you press the check button. It carries nothing about you or your tasks.</td>
         <td>The update source address you entered in settings. While that field is empty, which is the default, the application never checks. The Microsoft Store build is updated by the Store.</td>
+      </tr>
+      <tr>
+        <td>Your git configuration (hooks, filters, Git LFS)</td>
+        <td>Whatever your configuration does, for example a commit hook that sends the commit message to an issue tracker, Git LFS downloading or uploading large files, or a partial clone fetching missing objects.</td>
+        <td>When the application asks git to create a seat's worktree, commit, merge or land, git runs the hooks and filters configured in your repository and on your computer, and they connect wherever they are set up to. Apart from <code>push</code> steps, the application itself does not make git connect anywhere.</td>
+      </tr>
+      <tr>
+        <td>External links (only when you click)</td>
+        <td>The address you clicked. After that it is between your browser and that website (its cookies, the content it loads).</td>
+        <td>The website the link points to, such as this privacy policy or the support page, opened in your default browser.</td>
       </tr>
     </tbody>
   </table>
@@ -256,7 +276,7 @@
     <li>Approve or refuse each high-risk action at the approval gate.</li>
     <li>Leave unattended mode off; it is off by default. Unattended mode can schedule work, retry when quota returns and resume after a crash, but it approves nothing — it stops at every approval gate.</li>
     <li>Set a budget ceiling so a run stops at a cost you chose.</li>
-    <li>Pick local Ollama models for <code>agent</code> steps and chat, and your prompts never leave your computer.</li>
+    <li>Pick local Ollama models for <code>agent</code> steps and chat and leave their address at the default, and your prompts never leave your computer.</li>
     <li>Notifications and the update check are off by default; turn them on only if you want them.</li>
     <li>Switch off features you do not use under Settings → Modules.</li>
     <li>Open <b>Privacy, support and reporting</b> at any time to see, for the build you are running, where its data is kept on this machine, which of it is encrypted, and which step kinds can send data off it.</li>
@@ -331,33 +351,43 @@
     <li><code>platform.json</code> 與 <code>modules.json</code> —— 程式設定，以及你關掉了哪些模組；</li>
     <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
   </ul>
-  <p>本程式不會把這個資料夾上傳到任何地方。裡面的資料只會沿著第五節列的路線送出，例如繼續一段對話時，前面的訊息會跟著新訊息一起送出；記憶打開時，跟任務有關的記憶會跟著 <code>agent</code> 步驟的 prompt 一起送出。</p>
+  <p>本程式不會把這個資料夾上傳到任何地方。裡面的資料只會沿著第五節列的路線送出，例如繼續一段對話時，前面的訊息會跟著新訊息一起送出；記憶打開時，這一席讀得到的記憶會跟著 <code>agent</code> 步驟的 prompt 一起送出。</p>
 
   <h3 id="zh-5">五、什麼會離開這台電腦，而且只在你叫它送的時候</h3>
-  <p>任務規格是你自己寫的資料：你在「任務建立」畫面定義步驟，或是匯入 JSON，本程式負責照著執行。有四種步驟會把東西送出這台機器，每一種都只送到你自己在規格裡寫的、或自己選的目的地。</p>
+  <p>任務規格是你自己寫的資料：你在「任務建立」畫面定義步驟，或是匯入 JSON，本程式負責照著執行。下面這幾種步驟會把東西送出這台機器。其中四種本來就是做這件事；<code>command</code> 步驟和合併佇列的檢查命令，要看它們跑的程式會不會連網。</p>
   <div class="tablebox">
   <table>
     <thead><tr><th>步驟種類</th><th>送出什麼</th><th>送去哪裡</th></tr></thead>
     <tbody>
       <tr>
         <td><code>agent</code></td>
-        <td>步驟裡的指示、這個席次讀得到的檔案內容與 diff；記憶打開時，再加上跟這個任務有關的記憶。</td>
-        <td>你替這個步驟選的模型服務。用本機 Ollama 模型（內建範本預設就是）的話，這些資料都不會離開這台電腦。只有你自己選了雲端模型、也存了它的 API 金鑰，資料才會送到那一家。</td>
+        <td>步驟裡的指示、這個席次讀得到的檔案內容與 diff；記憶打開時，再加上這一席在這個工作區讀得到的記憶（有爭議的先放，再照分數排，塞到字數上限為止；不是照這個任務挑的）。</td>
+        <td>你替這個步驟選的模型服務。用本機 Ollama 模型（內建範本預設就是），而且連的是它預設的本機位址，這些資料都不會離開這台電腦。只有你選了雲端模型、而且拿得到它的 API 金鑰（存在 Vault 或設在環境變數），資料才會送到那一家。如果你用環境變數（例如 <code>OLLAMA_BASE_URL</code>）把位址改到別台電腦或代理伺服器，資料就送到那裡。</td>
       </tr>
       <tr>
         <td><code>http</code></td>
-        <td>你在步驟裡定義的那個請求。</td>
-        <td>你在規格裡寫的那個網址。</td>
+        <td>你在步驟裡定義的那個請求。對方回 307 或 308 轉址時，同一個請求（連內容）會再送到新的位址。</td>
+        <td>你在規格裡寫的那個網址。本程式會跟著轉址走，所以請求可能送到規格裡沒寫的主機。</td>
       </tr>
       <tr>
         <td><code>browser</code></td>
-        <td>導向動作，以及六個許可動詞在你指定的頁面上做的事。</td>
-        <td>你在規格裡寫的主機。導向之前會先過三道主機清單檢查。</td>
+        <td>導向動作、六個許可動詞在你指定的頁面上做的事，以及存著的登入狀態：它的 cookie 會跟著網頁的請求送出。</td>
+        <td>你在規格裡寫的主機。導向之前會先過三道主機清單檢查，被轉址到別的主機就停下來。網頁自己載入的圖片、腳本和它發出的請求，會連到網站自己選的地方，本程式不擋。</td>
       </tr>
       <tr>
         <td><code>push</code></td>
         <td>遠端還沒有的那幾個 commit：檔案內容、commit 訊息、作者名字與 email。</td>
         <td>你在 git 裡設定好的遠端。規格裡只能寫遠端的名字（例如 <code>origin</code>）。每一次推送都要你批准，批准畫面會顯示遠端網址，裡面的帳密會遮掉。</td>
+      </tr>
+      <tr>
+        <td><code>command</code></td>
+        <td>你跑的那個程式自己決定送什麼，例如 git 跟遠端交換資料、腳本把檔案上傳出去。</td>
+        <td>那個程式連到哪裡就是哪裡：<code>git fetch</code>、<code>git pull</code> 連到 git 設定的遠端，<code>npm install</code> 連到套件來源。本程式不知道、也不限制它連到哪裡。詳見第九節。</td>
+      </tr>
+      <tr>
+        <td>合併佇列的檢查</td>
+        <td>合併本身在你電腦上的 repo 裡做。規格裡寫的檢查命令會在每一筆合併前後跑，送出什麼由那些程式決定。</td>
+        <td>跟 <code>command</code> 一樣。</td>
       </tr>
     </tbody>
   </table>
@@ -370,7 +400,7 @@
       <tr>
         <td>對話</td>
         <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上平台記得的事。</td>
-        <td>你替這段對話選的模型。本機 Ollama 模型不會離開這台電腦；雲端模型就送到那一家。</td>
+        <td>你替這段對話選的模型。本機 Ollama 模型不會離開這台電腦；雲端模型就送到那一家。模型的位址被環境變數改掉的話，就送到改過的位址。</td>
       </tr>
       <tr>
         <td>通知（預設關閉）</td>
@@ -381,6 +411,16 @@
         <td>檢查更新（預設關閉）</td>
         <td>你按下檢查按鈕時發出的一個請求，只讀取更新說明檔，不帶任何關於你或你的任務的資料。</td>
         <td>你在設定裡填的更新來源網址。這一格空著（預設就是空的）的時候，本程式從不檢查。Microsoft Store 版本由 Store 負責更新。</td>
+      </tr>
+      <tr>
+        <td>你的 git 設定（hook、filter、Git LFS）</td>
+        <td>看你的設定，例如提交時的 hook 把提交訊息送到議題追蹤系統、Git LFS 下載或上傳大檔、partial clone 補抓缺的物件。</td>
+        <td>本程式叫 git 建席次的工作目錄、提交、合併、落地的時候，git 會跑你 repo 和電腦上設定的 hook 與 filter，它們設定連到哪裡就連到哪裡。除了 <code>push</code> 步驟，本程式自己不會叫 git 連網。</td>
+      </tr>
+      <tr>
+        <td>外部連結（你點了才開）</td>
+        <td>你點的那個網址；之後就是你的瀏覽器和那個網站之間的事（它的 cookie、它載入的內容）。</td>
+        <td>連結指向的網站，例如這份隱私權政策或支援頁，用你電腦預設的瀏覽器開啟。</td>
       </tr>
     </tbody>
   </table>
@@ -424,7 +464,7 @@
     <li>在批准閘門逐項批准或拒絕高風險動作。</li>
     <li>保持無人值守模式關閉，它預設就是關的。無人值守可以排程、額度回來自動再試、崩潰自動續跑，但它不批准任何事 —— 跑到要批准就會停。</li>
     <li>設定預算上限，讓一趟執行在你指定的金額停下來。</li>
-    <li>替 <code>agent</code> 步驟和對話選本機 Ollama 模型，你的 prompt 就不會離開這台電腦。</li>
+    <li>替 <code>agent</code> 步驟和對話選本機 Ollama 模型、位址維持預設，你的 prompt 就不會離開這台電腦。</li>
     <li>通知和檢查更新預設都是關的，需要再打開。</li>
     <li>在「設定 → 模組」關掉用不到的功能。</li>
     <li>隨時打開「隱私、支援與回報」，看你這一版<b>實際</b>算出來的結果：資料放在這台電腦的哪裡、哪些是加密的、哪幾種步驟會把東西送出這台機器。</li>
