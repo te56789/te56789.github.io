@@ -106,7 +106,7 @@
     <span class="zh">ai-team-os 使用者支援</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-09-11<br>
+    <b>Last updated / 最後更新日期：</b>2026-10-03<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Current version / 目前版本：</b>0.1.0<br>
     <b>Support email / 支援信箱：</b><a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a>
@@ -137,7 +137,7 @@
   <p>Two checks solve most reports:</p>
   <ul>
     <li><b>Open the health check page in the application.</b> It reports what the application can and cannot reach on this machine — the data folder, git, and whether the local model service answers.</li>
-    <li><b>If an <code>agent</code> step failed:</b> confirm a local Ollama service is running and that the model name in the step is written as <code>ollama/&lt;model&gt;</code>. This release recognises no other form.</li>
+    <li><b>If an <code>agent</code> step failed:</b> for a local model, confirm the Ollama service is running and that the model name in the step is written as <code>ollama/&lt;model&gt;</code>; for a cloud model, confirm that the provider's API key is stored in the vault (Settings).</li>
   </ul>
 
   <h3 id="en-2">2. Report a bug</h3>
@@ -174,7 +174,7 @@
   <p>Email <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a> with the subject line <code>[ai-team-os] security</code>. Please do not post a vulnerability in a public thread before it has been fixed. Describe the issue, the affected version, and the impact; a proof of concept is welcome but must not contain real secrets.</p>
 
   <h3 id="en-5">5. Privacy questions</h3>
-  <p>See the <a href="../privacy/">privacy policy</a>. In short: the application runs locally, has no account, sends no telemetry, and transmits data only where a task step you wrote tells it to. Questions to the same address, subject line <code>[ai-team-os] privacy</code>.</p>
+  <p>See the <a href="../privacy/">privacy policy</a>. In short: the application runs locally, has no account, sends no telemetry, and sends data only in ways you set up yourself: task steps you wrote, chats with a cloud model, notifications you switched on, and update checks you run. Questions to the same address, subject line <code>[ai-team-os] privacy</code>.</p>
 
   <h3 id="en-6">6. Known limitations</h3>
   <div class="tablebox">
@@ -186,8 +186,8 @@
         <td>The installer build keeps its data in <code>%APPDATA%\ai-team-os</code>. The Microsoft Store (MSIX) build keeps its data in <code>%USERPROFILE%\.ai-team-os</code> instead, because MSIX virtualises writes to <code>%APPDATA%</code> and deletes them on uninstall. If you move from one channel to the other, the new build starts with an empty data folder: it does not see your existing vault, runs or artifacts. Use <code>npm run backup</code> to carry them across, or point <code>TEAMOS_HOME</code> at the folder you want both builds to use.</td>
       </tr>
       <tr>
-        <td>Local Ollama required for <code>agent</code> steps</td>
-        <td>The application does not bundle or install Ollama. In this release the <code>agent</code> step recognises only models addressed as <code>ollama/&lt;model&gt;</code>. Other providers need an API key, and keys held in the vault are never handed to the execution layer in plaintext, so they cannot drive an <code>agent</code> step in this release.</td>
+        <td>No model is bundled for <code>agent</code> steps</td>
+        <td>The application does not bundle or install any model. A local model needs Ollama installed and running, with the model written as <code>ollama/&lt;model&gt;</code>. A cloud model needs that provider's API key stored in the vault; the provider bills you for its use, and the step's data goes to that provider (see the privacy policy).</td>
       </tr>
       <tr>
         <td>Microsoft Edge required for <code>browser</code> steps</td>
@@ -267,7 +267,7 @@
   <p>大部分的回報，這兩步就能解決：</p>
   <ul>
     <li><b>先開程式裡的體檢頁。</b>它會列出在這台機器上，哪些東西接得到、哪些接不到 —— 資料家、git，以及本機模型服務有沒有回應。</li>
-    <li><b>如果是 <code>agent</code> 步驟失敗：</b>確認本機 Ollama 服務有在跑，而且步驟裡的模型名稱寫成 <code>ollama/&lt;模型名&gt;</code>。本版只認這種寫法。</li>
+    <li><b>如果是 <code>agent</code> 步驟失敗：</b>用本機模型的話，確認 Ollama 服務有在跑，而且步驟裡的模型名稱寫成 <code>ollama/&lt;模型名&gt;</code>；用雲端模型的話，確認那一家的 API 金鑰已經存進 Vault（在設定頁）。</li>
   </ul>
 
   <h3 id="zh-2">二、回報問題</h3>
@@ -304,7 +304,7 @@
   <p>寄到 <a href="mailto:linsevenlight@gmail.com">linsevenlight@gmail.com</a>，主旨開頭寫 <code>[ai-team-os] security</code>。修好之前請不要把漏洞貼在公開討論串。請描述問題、受影響的版本與影響範圍；歡迎附概念驗證，但裡面不可以有真實祕密。</p>
 
   <h3 id="zh-5">五、隱私問題</h3>
-  <p>請看<a href="../privacy/">隱私權政策</a>。簡短講：這支程式跑在本機、沒有帳號、不送遙測，只有在你自己寫的任務步驟指定時才會把資料送出去。有問題寄同一個信箱，主旨開頭寫 <code>[ai-team-os] privacy</code>。</p>
+  <p>請看<a href="../privacy/">隱私權政策</a>。簡短講：這支程式跑在本機、沒有帳號、不送遙測，資料只會從你自己設定好的地方送出去：你寫的任務步驟、你跟雲端模型的對話、你打開的通知，以及你按下的檢查更新。有問題寄同一個信箱，主旨開頭寫 <code>[ai-team-os] privacy</code>。</p>
 
   <h3 id="zh-6">六、已知限制</h3>
   <div class="tablebox">
@@ -316,8 +316,8 @@
         <td>安裝檔版本的資料放在 <code>%APPDATA%\ai-team-os</code>；Microsoft Store（MSIX）版本放在 <code>%USERPROFILE%\.ai-team-os</code>。會分開是因為 MSIX 會把寫進 <code>%APPDATA%</code> 的東西虛擬化，而且解除安裝時一起刪掉。所以你如果從一條通路換到另一條，新版本會從一個空的資料夾開始 —— 看不到你原本的金鑰、執行紀錄與產物。要帶過去請用 <code>npm run backup</code>，或是用 <code>TEAMOS_HOME</code> 讓兩邊指到同一個資料夾。</td>
       </tr>
       <tr>
-        <td><code>agent</code> 步驟需要本機 Ollama</td>
-        <td>本程式不內含也不會幫你安裝 Ollama。本版的 <code>agent</code> 步驟只認得寫成 <code>ollama/&lt;模型名&gt;</code> 的模型。別家 provider 要金鑰，而 Vault 裡的金鑰不會以明文交給執行層，所以本版沒辦法用它們跑 <code>agent</code> 步驟。</td>
+        <td><code>agent</code> 步驟不附模型</td>
+        <td>本程式不內含、也不會幫你安裝任何模型。用本機模型要先裝好 Ollama 並讓它跑著，模型寫成 <code>ollama/&lt;模型名&gt;</code>。用雲端模型要把那一家的 API 金鑰存進 Vault；費用由那一家向你收，步驟的資料也會送到那一家（見隱私權政策）。</td>
       </tr>
       <tr>
         <td><code>browser</code> 步驟需要 Microsoft Edge</td>
@@ -377,7 +377,7 @@
 </section>
 
 <footer>
-  ai-team-os Support · ai-team-os 使用者支援 · Last updated 2026-09-11 · Publisher te56789
+  ai-team-os Support · ai-team-os 使用者支援 · Last updated 2026-10-03 · Publisher te56789
 </footer>
 
 </div>
