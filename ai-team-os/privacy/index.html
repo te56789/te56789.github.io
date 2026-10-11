@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-10-08<br>
+    <b>Last updated / 最後更新日期：</b>2026-10-11<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -180,8 +180,8 @@
       </tr>
       <tr>
         <td><code>http</code></td>
-        <td>The request you defined in the step. If the server answers with a 307 or 308 redirect, the same request, body included, is sent again to the new address.</td>
-        <td>The URL you wrote in the specification. Redirects are followed, so a request can end up at a host that is not in your specification.</td>
+        <td>The request you defined in the step. When the server redirects, a request that changes something (POST, PUT, PATCH, DELETE), body included, is sent again only to the same origin (same scheme, host and port). Headers filled in from the vault, and any Authorization or Cookie header, are never sent to a different origin.</td>
+        <td>The URL you wrote in the specification. A redirect is followed only to an origin (scheme, host and port) that one of that seat's own <code>http</code> steps already uses; a redirect anywhere else stops the step.</td>
       </tr>
       <tr>
         <td><code>browser</code></td>
@@ -219,12 +219,12 @@
       <tr>
         <td>Notifications (off by default)</td>
         <td>Notices from unattended mode about runs that need you: the notice's title and text, which name the task concerned, plus its run id unless your message template leaves it out.</td>
-        <td>The webhook address you stored, for example a Telegram, Slack or Discord endpoint.</td>
+        <td>The webhook address you stored, for example a Telegram, Slack or Discord endpoint. If that address answers with a redirect, the notification is not passed on; it counts as not sent.</td>
       </tr>
       <tr>
         <td>Update check (off by default)</td>
         <td>A request for the update description file, made when you press the check button. It carries nothing about you or your tasks.</td>
-        <td>The update source address you entered in settings. While that field is empty, which is the default, the application never checks. The Microsoft Store build is updated by the Store.</td>
+        <td>The update source address you entered in settings. Redirects are followed (a GitHub download address, for example, forwards to GitHub's own file host); the request still carries nothing about you. While that field is empty, which is the default, the application never checks. The Microsoft Store build is updated by the Store.</td>
       </tr>
       <tr>
         <td>Your git configuration (hooks, filters, Git LFS)</td>
@@ -373,8 +373,8 @@
       </tr>
       <tr>
         <td><code>http</code></td>
-        <td>你在步驟裡定義的那個請求。對方回 307 或 308 轉址時，同一個請求（連內容）會再送到新的位址。</td>
-        <td>你在規格裡寫的那個網址。本程式會跟著轉址走，所以請求可能送到規格裡沒寫的主機。</td>
+        <td>你在步驟裡定義的那個請求。對方回轉址時，會改動資料的請求（POST、PUT、PATCH、DELETE，連同內容）只會再送到同一個來源（scheme、主機、port 都相同）。從 Vault 取出的標頭，以及 Authorization、Cookie 標頭，不會送到其他來源。</td>
+        <td>你在規格裡寫的那個網址。轉址只會跟到這一席的 <code>http</code> 步驟本來就寫過的來源（scheme、主機、port 都相同），轉到其他地方就停下來。</td>
       </tr>
       <tr>
         <td><code>browser</code></td>
@@ -412,12 +412,12 @@
       <tr>
         <td>通知（預設關閉）</td>
         <td>無人值守遇到需要你處理的狀況時發的通知：通知的標題與內容，裡面會寫是哪一個任務；除非你的訊息樣板沒放，否則也會帶執行編號。</td>
-        <td>你存的 webhook 網址，例如 Telegram、Slack 或 Discord 的收件端。</td>
+        <td>你存的 webhook 網址，例如 Telegram、Slack 或 Discord 的收件端。收件端回轉址的話，通知不會跟著轉過去，算是沒送出。</td>
       </tr>
       <tr>
         <td>檢查更新（預設關閉）</td>
         <td>你按下檢查按鈕時發出的一個請求，只讀取更新說明檔，不帶任何關於你或你的任務的資料。</td>
-        <td>你在設定裡填的更新來源網址。這一格空著（預設就是空的）的時候，本程式從不檢查。Microsoft Store 版本由 Store 負責更新。</td>
+        <td>你在設定裡填的更新來源網址。對方回轉址會跟過去（例如 GitHub 的下載網址會轉到 GitHub 自己的檔案主機），請求一樣不帶任何關於你的資料。這一格空著（預設就是空的）的時候，本程式從不檢查。Microsoft Store 版本由 Store 負責更新。</td>
       </tr>
       <tr>
         <td>你的 git 設定（hook、filter、Git LFS）</td>
@@ -495,7 +495,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-10-08 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-10-11 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
