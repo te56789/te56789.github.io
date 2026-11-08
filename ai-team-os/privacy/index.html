@@ -166,6 +166,7 @@
     <li><code>platform.json</code>, <code>modules.json</code>, <code>routing.json</code> and <code>unattended.json</code> — application settings, which modules you have switched off, model-routing rules, and unattended-mode settings (the notification webhook address is not stored there, only its name in the vault);</li>
     <li><code>team-os.json</code> — for each additional workspace you created, which feature modules and which package publishers it may use (identifiers only);</li>
     <li><code>home.json</code> — the data folder's format version, and the computer name and Windows user name that last opened it;</li>
+    <li><code>model-prices.json</code> — the model prices you entered in Settings (the price of each model, where the figure came from and when you checked it; prices only, nothing about your tasks);</li>
     <li><code>ui.json</code> — how the screen looks: theme, text size, sidebar, custom colours, background settings and start-page layout (option values only);</li>
     <li><code>ui-bg</code> — the background image you chose, if you chose one: a copy that the application shrinks (longest side at most 2,560 pixels) and re-encodes as WebP, which drops the photo's embedded details such as camera and location data. It is used only to draw the screen and is never sent anywhere;</li>
     <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
@@ -379,6 +380,7 @@
     <li><code>platform.json</code>、<code>modules.json</code>、<code>routing.json</code> 與 <code>unattended.json</code> —— 程式設定、你關掉了哪些模組、挑模型的路由規則，以及無人值守的設定（通知的 webhook 網址不存在這裡，只記它在 Vault 裡的名字）；</li>
     <li><code>team-os.json</code> —— 你另外建的每個工作區可以用哪些功能模組、收哪幾層發行者的套件（只記代號）；</li>
     <li><code>home.json</code> —— 資料夾格式的版本，以及上一次打開它的電腦名稱和 Windows 使用者名稱；</li>
+    <li><code>model-prices.json</code> —— 你在設定裡填的模型價目（每一顆模型的價錢、來源與查核日期；只有價錢，不含任務內容）；</li>
     <li><code>ui.json</code> —— 畫面外觀：主題、字級、側邊欄、自訂顏色、背景圖的設定和開始頁的排列（只有選項值）；</li>
     <li><code>ui-bg</code> —— 你選的背景圖（有選才有）：程式先把它縮小（長邊最多 2,560 像素）、重新存成 WebP 再存下來，照片裡的拍攝資訊（相機、拍攝地點等）會一起拿掉。這張圖只用來畫畫面，不會送到任何地方；</li>
     <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
