@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-10-11<br>
+    <b>Last updated / 最後更新日期：</b>2026-11-08<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -115,7 +115,7 @@
   <h2>English</h2>
 
   <div class="callout ok">
-    <p><b>In one paragraph.</b> ai-team-os runs entirely on your own Windows PC. There is no account, no sign-in, no developer-operated server and no telemetry — the developer receives no data from the application at all. Data leaves your computer only in ways you set up yourself: a task step you wrote, a chat you send to a cloud model, notifications you switched on, or an update check against an address you entered. Each one goes only to the destination you chose. Everything else stays in one local folder that you can delete at any time.</p>
+    <p><b>In one paragraph.</b> ai-team-os runs entirely on your own Windows PC. There is no account, no sign-in, no developer-operated server and no telemetry — the developer receives no data from the application at all. Data leaves your computer only in ways you set up yourself: a task step you wrote, a chat you send to a cloud model, notifications you switched on, an update check against an address you entered, or a background image you download from a web address you pasted. Each one goes only to the destination you chose. Everything else stays in one local folder that you can delete at any time.</p>
   </div>
 
   <ol class="toc">
@@ -145,12 +145,13 @@
 
   <h3 id="en-3">3. No telemetry</h3>
   <p>The application sends no usage data, analytics, crash reports or diagnostic pings to the developer. The telemetry package in the source tree is intentionally empty. There is no analytics setting to turn off, because nothing is collected.</p>
+  <p>The application also does not turn on crash dumps or memory snapshots of its own. While it holds a secret it switches off Node.js diagnostic reports, and the health check warns you if Windows is set to save full memory dumps of the application.</p>
 
   <h3 id="en-4">4. What is stored on your device</h3>
   <p>All application data lives in one local data folder. By default that folder is <code>%APPDATA%\ai-team-os</code> for the installer build, and <code>%USERPROFILE%\.ai-team-os</code> for the Microsoft Store (MSIX) build — the Store build deliberately keeps its data outside <code>%APPDATA%</code> so that uninstalling the app never deletes it. You can move it by setting the <code>TEAMOS_HOME</code> environment variable. The folder contains:</p>
   <ul>
-    <li><code>vault\</code> — stored credentials (API keys, the notification webhook address, a GitHub token), encrypted with Windows DPAPI under your Windows user account;</li>
-    <li><code>runs\runs.db</code> — run records, step events, the cost ledger, task-specification versions, notices and the list of artifacts;</li>
+    <li><code>vault\</code> — stored credentials (API keys, the notification webhook address, a GitHub token), each value encrypted with Windows DPAPI under your Windows user account. Next to them, <code>vault\vault.db</code> keeps, unencrypted, each credential's name, version and state (in use, switched off or revoked), project bindings, and a record of every use and every change: which credential, from which layer and version or environment variable, for which project and run. A value that was switched off, revoked or reported as leaked is remembered only as a keyed hash, never as the value, so that the same value is refused wherever it is stored again; the key for those hashes is itself encrypted with DPAPI;</li>
+    <li><code>runs\runs.db</code> — run records, step events, the cost ledger, task-specification versions, notices and the list of artifacts; also one line per model call (task steps, chat, roundtable, planning drafts and conversation summaries) with the project, the model, token counts and the estimated cost, but not what was sent; and the monthly budget and calls-per-minute limit set for each project;</li>
     <li><code>registry.db</code> — the workspaces and projects you have registered;</li>
     <li><code>packages\packages.db</code> — the packages you installed from a file: which ones, which version, who signed them, whether they are switched off, the permissions they need, and a log of every install, update, rollback and uninstall;</li>
     <li><code>packages\store\</code> — the original <code>.atm</code> file of each installed package version, kept unchanged and named after its SHA-256 hash;</li>
@@ -158,11 +159,15 @@
     <li><code>modules\feature.chat\data.db</code> — your conversations with AI models: what you typed, the replies, the text of attached files, and which model each message used and what it cost. Anything you paste into a conversation is kept here;</li>
     <li><code>modules\feature.roundtable\data.db</code> — roundtable decision records;</li>
     <li><code>modules\feature.automation\data.db</code> — the unattended-mode ledger and the notifications it sent, including the ones that failed;</li>
-    <li><code>artifacts\</code> — the content of files produced by task steps;</li>
+    <li><code>modules\feature.tasks\blobs\</code> — the content of files produced by task steps. A file whose content contains a secret used by that run is not stored; only a keyed hash of it is recorded. Content saved by earlier versions can still be in <code>artifacts\</code> until the Tasks feature moves it (it stays there while Tasks is switched off);</li>
     <li><code>browser-profiles\</code> — browser sign-in state used by <code>browser</code> steps, encrypted with Windows DPAPI;</li>
     <li><code>recorded\</code> — task drafts recorded in the browser, in plain text. They can contain values you typed into form fields; password fields are never recorded;</li>
-    <li><code>logs\</code> — fault logs. Strings that look like keys are masked before anything is written, but task titles and error messages can appear;</li>
-    <li><code>platform.json</code> and <code>modules.json</code> — application settings, and which modules you have switched off;</li>
+    <li><code>logs\</code> — fault logs. Before anything is written, the values of credentials the application has used, and strings that look like keys, are masked; task titles and error messages can still appear;</li>
+    <li><code>platform.json</code>, <code>modules.json</code>, <code>routing.json</code> and <code>unattended.json</code> — application settings, which modules you have switched off, model-routing rules, and unattended-mode settings (the notification webhook address is not stored there, only its name in the vault);</li>
+    <li><code>team-os.json</code> — for each additional workspace you created, which feature modules and which package publishers it may use (identifiers only);</li>
+    <li><code>home.json</code> — the data folder's format version, and the computer name and Windows user name that last opened it;</li>
+    <li><code>ui.json</code> — how the screen looks: theme, text size, sidebar, custom colours, background settings and start-page layout (option values only);</li>
+    <li><code>ui-bg</code> — the background image you chose, if you chose one: a copy that the application shrinks (longest side at most 2,560 pixels) and re-encodes as WebP, which drops the photo's embedded details such as camera and location data. It is used only to draw the screen and is never sent anywhere;</li>
     <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
   </ul>
   <p>The application never uploads this folder. Pieces of it travel only along the routes listed in section 5: for example, the earlier messages of a conversation go with your next chat message, and when memory is switched on, the remembered items that seat may read go with an <code>agent</code> step's prompt.</p>
@@ -176,7 +181,7 @@
       <tr>
         <td><code>agent</code></td>
         <td>The step's instructions, the content of the files and diffs that seat can read, and, when memory is switched on, the remembered items that seat may read in the workspace (disputed ones first, then by score, until a size budget is reached; they are not picked per task).</td>
-        <td>The model service you chose for that step. A local Ollama model, which the built-in templates use by default, keeps all of this on your computer as long as it is reached at its default local address. A cloud model is used only if you pick one and its API key is available, from the vault or from an environment variable; the data then goes to that provider. If you point a provider elsewhere with an environment variable such as <code>OLLAMA_BASE_URL</code> (another machine on your network, a proxy), the data goes to that address.</td>
+        <td>The model service you chose for that step. A local Ollama model, which the built-in templates use by default, keeps all of this on your computer as long as it is reached at its default local address and its weights are on this computer; Ollama's own cloud models (for example names ending in <code>-cloud</code>) are called through the same local address but pass the data on to Ollama's cloud service. A cloud model is used only if you pick one and its API key is available, from the vault or from an environment variable; the data then goes to that provider. If you point a provider elsewhere with an environment variable such as <code>OLLAMA_BASE_URL</code> (another machine on your network, a proxy), the data goes to that address.</td>
       </tr>
       <tr>
         <td><code>http</code></td>
@@ -185,7 +190,7 @@
       </tr>
       <tr>
         <td><code>browser</code></td>
-        <td>The navigation, whatever the six permitted verbs do on the page you named, and the saved sign-in state: its cookies go out with the page's requests.</td>
+        <td>The navigation, whatever the permitted verbs do on the page you named, and the saved sign-in state: its cookies go out with the page's requests.</td>
         <td>The host you wrote in the specification. Three separate host-allowlist checks run before a navigation is performed, and a redirect to another host stops the step. The pages themselves load images, scripts and other requests from wherever the website chooses; those are not blocked.</td>
       </tr>
       <tr>
@@ -213,8 +218,8 @@
     <tbody>
       <tr>
         <td>Chat</td>
-        <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the remembered items.</td>
-        <td>The model you picked for that conversation. A local Ollama model keeps it on your computer; a cloud model sends it to that provider. If the model's address was changed with an environment variable, the data goes to that address.</td>
+        <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the workspace's remembered items (not the project-level ones), up to about 1,200 tokens.</td>
+        <td>The model you picked for that conversation. A local Ollama model whose weights are on this computer keeps it on your computer. Any other model (a cloud model, an Ollama cloud model, Ollama on another machine, or an address changed with an environment variable) sends it to that provider or address, and before it does, the desktop app asks you in its own confirmation window, which names the model and the actual address. One confirmation covers that message and the next 29 to the same model; changing the model, deleting the conversation or restarting the application asks again, and including memory has to be agreed to in a confirmation as well.</td>
       </tr>
       <tr>
         <td>Notifications (off by default)</td>
@@ -232,6 +237,16 @@
         <td>When the application asks git to create a seat's worktree, commit, merge or land, git runs the hooks and filters configured in your repository and on your computer, and they connect wherever they are set up to. Apart from <code>push</code> steps, the application itself does not make git connect anywhere.</td>
       </tr>
       <tr>
+        <td>Background image from a web address (only when you paste an address and confirm)</td>
+        <td>One download request: the address itself (anything written in it reaches that website) and a fixed program name as the User-Agent. Nothing about you or your tasks is added, though, as with any connection, the website sees your computer's public IP address and your DNS server sees the site's name.</td>
+        <td>The address you pasted under Settings → 「外觀與主題」 (Appearance and themes), and only after the desktop app has shown the full address in a confirmation window and you pressed OK. Only <code>https</code> addresses that resolve to public IP addresses are accepted. A redirect is not followed: nothing is downloaded and you are told where it wanted to go. The download stops after 15 seconds or 8 MB. The image is then shrunk and saved as <code>ui-bg</code> (see section 4).</td>
+      </tr>
+      <tr>
+        <td>Checking whether Ollama is running</td>
+        <td>A request for the list of installed models. It carries nothing about you or your tasks.</td>
+        <td>The Ollama address: this computer (<code>127.0.0.1:11434</code>) unless you changed it with the <code>OLLAMA_BASE_URL</code> environment variable, in which case that address (the getting-started check and the health check leave out any user name, password or path in it). The request is made when the application opens and when you return to the start page (for the 「先做這 3 步」 getting-started steps), when the health check runs, and when the chat page lists models.</td>
+      </tr>
+      <tr>
         <td>External links (only when you click)</td>
         <td>The address you clicked. After that it is between your browser and that website (its cookies, the content it loads).</td>
         <td>The website the link points to, such as this privacy policy or the support page, opened in your default browser.</td>
@@ -240,9 +255,11 @@
   </table>
   </div>
   <p>What is sent is what you put there yourself: prompt text, the files and project context you selected, your messages. The application does not scan your drive, does not upload files you did not reference, and sends nothing beyond what these two tables list.</p>
+  <p><b>Confirmations come from the desktop app.</b> Starting, resuming or re-running a task, approving a step that waits for you, sending a conversation off this computer, downloading a background image, and other decisions such as changing settings or deleting something that cannot be brought back, each open a confirmation window first. The desktop app builds that window from what will actually be done, not from the page that shows model output and web content, and nothing happens until you press OK. When the content is too long for a standard Windows dialog, a full-content window lists all of it, and its OK button works only after you have scrolled to the end.</p>
 
   <h3 id="en-6">6. Credentials</h3>
   <p>Credentials are held in a local vault encrypted with Windows DPAPI and tied to your Windows user account. The vault supports three profile layers — system, user and project — and credential rotation. Plaintext secrets are never written to logs, never rendered in the user interface and never placed on a command line.</p>
+  <p>Every use of a credential goes through one gatekeeper. A credential you switched off or revoked is not used, and the same value is refused even if it is stored again under another name or layer, or set in an environment variable. A project can be bound so that it never falls back to your user-level or system-level key. If the vault exists but cannot be opened, no credential is used at all, not even one from an environment variable. API keys found in environment variables are taken over by the application when it starts and removed from its environment, so programs started by <code>command</code> steps do not inherit them. The values of credentials the application has used are masked before text is written to a log, an error record or a report, and before text is sent to a model. A <code>browser</code> step's screenshot is not saved if the text visible on the page at that moment shows a password the step typed, a sign-in token, or a credential the application has used; the step fails instead. Text drawn inside pictures cannot be checked this way.</p>
   <p>You may choose to store credentials for third-party services. The kinds of credential the vault can hold include API keys for DeepSeek, Meta/Llama, DashScope/Qwen, Z.ai/GLM, Gemini, OpenAI and Anthropic services, notification webhook URLs of the kind used by Telegram or Slack, and a GitHub token. A webhook URL is itself a secret and is stored as one. The GitHub token is used only by a command-line tool that exists when the application is run from source, which posts a redacted handoff package to a GitHub issue or pull request you name; the Microsoft Store and installer builds do not use it.</p>
   <div class="callout warn">
     <p>None of these services is enabled by default, and ai-team-os is not affiliated with, endorsed by, or an official client of any of them. Storing a credential does not by itself transmit anything: a credential is used only when a step you wrote calls the service it belongs to.</p>
@@ -255,36 +272,39 @@
   <p>The application reads and writes files inside the projects you register and inside its own data folder. A <code>write_file</code> step writes where the specification says to write. A <code>git_commit</code> step commits in the git worktree assigned to that seat. Files are read only when a step you wrote refers to them. The application never uploads the contents of your drive.</p>
 
   <h3 id="en-9">9. Local commands</h3>
-  <p>A <code>command</code> step runs a command line that you wrote into the task specification, on your machine, under your Windows account. The application does not download programs and run them, and does not fetch code from the internet to execute. High-risk actions stop and wait for your approval before running; an action beyond its granted permission level is refused and produces no side effect.</p>
+  <p>A <code>command</code> step runs a command line that you wrote into the task specification, on your machine, under your Windows account. The application does not download programs and run them, and does not fetch code from the internet to execute. High-risk actions stop and wait for your approval before running, in a confirmation window of the desktop app that lists every parameter the step will actually use; an action beyond its granted permission level is refused and produces no side effect.</p>
   <p>A <code>command</code> step can start only programs on the built-in allow-list, and running a script, or any interpreter command that could execute code, needs your approval. If the program itself uses the network, as <code>git fetch</code> or <code>npm install</code> do, it contacts the address it is set up for; the application adds no data of its own.</p>
-  <p><b>Packages.</b> Under Settings → Packages you can install a package (an <code>.atm</code> file) that you pick from your own drive. A package holds task templates only: data, not programs, so installing one runs nothing. A template only fills in a task specification; its steps run when you start that task, under the same approvals as any other. The application does not download packages and has no package store or marketplace; installing, updating, rolling back or uninstalling a package sends nothing anywhere. Before installing, it shows you the permissions the templates would use. Every time a package is read, its signature is checked again against the list of trusted publisher keys built into the application. A package that is unsigned, or signed with a key not on that list, installs only if you switch on developer mode in settings, which is off by default.</p>
+  <p><b>Packages.</b> Under Settings → 「功能模組」 (Feature modules) → 「套件」 (Packages) you can install a package (an <code>.atm</code> file) that you pick from your own drive. A package holds task templates only: data, not programs, so installing one runs nothing. A template only fills in a task specification; its steps run when you start that task, under the same approvals as any other. The application does not download packages and has no package store or marketplace; installing, updating, rolling back or uninstalling a package sends nothing anywhere. Before installing, it shows you the permissions the templates would use. Every time a package is read, its signature is checked again against the list of trusted publisher keys built into the application. A package that is unsigned, or signed with a key not on that list, installs only if you switch on developer mode in settings, which is off by default.</p>
 
   <h3 id="en-10">10. Live generative AI</h3>
   <p>An <code>agent</code> step or a chat produces text generated by a model in response to your prompt. Generated output is not reviewed by the developer before you see it, and it can be inaccurate, offensive or otherwise unsuitable. Do not rely on generated output without checking it.</p>
-  <p>You can report inappropriate AI-generated content from inside the application: main window → <b>Privacy, support and reporting</b> → <b>Report inappropriate AI output</b>. Pick a reason, optionally add the run and step identifiers and a short note, then press <b>preview what will be sent</b> to read the exact payload before anything is written.</p>
-  <p>A report carries identifiers only — report id, timestamp, application version, reason, run id, step id and your note. It carries no prompt, no file content, no conversation and no credential. Your note is additionally scrubbed of anything that looks like an API key, an e-mail address, a URL, a Windows or UNC path, or a long unbroken string, and it is truncated at 500 characters; the application shows you what it removed.</p>
+  <p>You can report inappropriate AI-generated content from inside the application: <b>Settings</b> → <b>「隱私與回報」</b> (Privacy and reporting) → <b>Report inappropriate AI output</b>. Pick a reason, optionally add the run and step identifiers and a short note, then press <b>preview what will be sent</b> to read the exact payload before anything is written.</p>
+  <p>A report carries identifiers only — report id, timestamp, application version, reason, run id, step id and your note. It carries no prompt, no file content, no conversation and no credential. Your note is additionally scrubbed of credential values the application has used and of anything that looks like an API key, an e-mail address, a URL, a Windows or UNC path, or a long unbroken string, and it is truncated at 500 characters; the application shows you what it removed.</p>
   <p>The report is written as a file in <code>reports\</code> inside your data folder. This release has no reporting server, so nothing is transmitted: you decide whether to send that file to the support address. The support page describes the same route for anyone who cannot open the application.</p>
 
   <h3 id="en-11">11. Data sharing and sale</h3>
   <p>The developer receives no user data, and therefore shares none and sells none. Data goes only to the destinations you chose, as listed in section 5.</p>
 
   <h3 id="en-12">12. Retention and deletion</h3>
-  <p>Everything is kept locally, and kept until you delete it. Deleting the data folder removes all application data, including the vault, run history, cost ledger and artifacts. Backup and restore is manual and is triggered by you; a backup is written where you tell the application to write it. There is no server-side copy for you to request the deletion of.</p>
+  <p>Everything is kept locally, and kept until you delete it. Deleting the data folder removes all application data, including the vault, run history, cost ledger and artifacts. Uninstalling the application deliberately leaves the data folder in place: removing the program and discarding your data are two separate steps. Backups are never made automatically; a backup exists only if you create one, in the folder you choose. In this version backups are created and restored with the command-line tool that comes with the source code; the installed builds can only check an existing backup, under Settings → 「備份與資料」 (Backup and data). There is no server-side copy for you to request the deletion of.</p>
+  <p>To delete individual things from inside the application: under Settings → 「備份與資料」, 「清產物內容（先試算）」 shows which artifact content no run refers to any more, and 「真的清」 deletes it after a confirmation; under Settings → 「外觀與主題」, 「拿掉你的圖」 deletes the background image.</p>
   <p>Uninstalling a package deletes its versions and its original files. The log of what was installed and removed stays in <code>packages\packages.db</code> until you delete the data folder.</p>
 
   <h3 id="en-13">13. Your controls</h3>
   <ul>
     <li>Delete the data folder, or any file inside it, at any time.</li>
-    <li>Remove or rotate any stored credential.</li>
+    <li>Replace, switch off, switch back on or revoke any stored credential under Settings → 「模型與金鑰」 (Models and keys). Revoking erases every stored version of its encrypted value.</li>
     <li>Decide which steps exist in a task. A step you do not write never runs.</li>
     <li>Approve or refuse each high-risk action at the approval gate.</li>
     <li>Leave unattended mode off; it is off by default. Unattended mode can schedule work, retry when quota returns and resume after a crash, but it approves nothing — it stops at every approval gate.</li>
     <li>Set a budget ceiling so a run stops at a cost you chose.</li>
-    <li>Pick local Ollama models for <code>agent</code> steps and chat and leave their address at the default, and your prompts never leave your computer.</li>
+    <li>Pick local Ollama models whose weights are on this computer (not Ollama's cloud models) for <code>agent</code> steps and chat, and leave their address at the default; then your prompts never leave your computer.</li>
     <li>Notifications and the update check are off by default; turn them on only if you want them.</li>
-    <li>Switch off features you do not use under Settings → Modules.</li>
-    <li>Install only the package files you chose, and switch off or uninstall any of them at any time under Settings → Packages.</li>
-    <li>Open <b>Privacy, support and reporting</b> at any time to see, for the build you are running, where its data is kept on this machine, which of it is encrypted, and which step kinds can send data off it.</li>
+    <li>Switch off features you do not use under Settings → 「功能模組」 (Feature modules).</li>
+    <li>Limit which feature modules and which package publishers each additional workspace may use, under Settings → 「工作區與專案」 (Workspaces and projects).</li>
+    <li>Install only the package files you chose, and switch off or uninstall any of them at any time under Settings → 「功能模組」 → 「套件」.</li>
+    <li>Use your own background image only if you want one: downloading one from an address asks for confirmation every time, and 「拿掉你的圖」 deletes the saved copy.</li>
+    <li>Open Settings → <b>「隱私與回報」</b> (Privacy and reporting) at any time to see, for the build you are running, where its data is kept on this machine, which of it is encrypted, and which step kinds can send data off it.</li>
     <li>Report AI output you consider inappropriate, and read the exact payload before it is written.</li>
   </ul>
 
@@ -308,7 +328,7 @@
   <h2>繁體中文</h2>
 
   <div class="callout ok">
-    <p><b>一段話講完。</b>ai-team-os 完全跑在你自己的 Windows 電腦上。沒有帳號、沒有登入、沒有開發者架設的伺服器，也沒有任何遙測 —— 開發者收不到這支程式的任何資料。資料只會從你自己設定好的地方離開這台電腦：你寫的任務步驟、你傳給雲端模型的對話、你打開的通知，或是填了網址之後按下的「檢查更新」。每一種都只送到你選的目的地。其餘全部留在一個本機資料夾，你隨時可以刪掉。</p>
+    <p><b>一段話講完。</b>ai-team-os 完全跑在你自己的 Windows 電腦上。沒有帳號、沒有登入、沒有開發者架設的伺服器，也沒有任何遙測 —— 開發者收不到這支程式的任何資料。資料只會從你自己設定好的地方離開這台電腦：你寫的任務步驟、你傳給雲端模型的對話、你打開的通知、填了網址之後按下的「檢查更新」，或是你貼上網址要下載的背景圖。每一種都只送到你選的目的地。其餘全部留在一個本機資料夾，你隨時可以刪掉。</p>
   </div>
 
   <ol class="toc">
@@ -338,12 +358,13 @@
 
   <h3 id="zh-3">三、沒有遙測</h3>
   <p>本程式不會把使用資料、分析數據、當機報告或診斷訊號送回給開發者。原始碼裡的 telemetry 套件是刻意留空的。這裡沒有「關閉分析」的開關，因為根本沒有收集。</p>
+  <p>本程式也不會自己開啟當機傾印或記憶體快照。手上拿著祕密的時候，它會關掉 Node.js 的診斷報告；如果 Windows 被設定成會把本程式的整份記憶體存成傾印檔，體檢會提醒你。</p>
 
   <h3 id="zh-4">四、存在你電腦裡的東西</h3>
   <p>本程式的資料全部放在同一個本機資料夾。安裝檔版本的預設位置是 <code>%APPDATA%\ai-team-os</code>；Microsoft Store（MSIX）版本則是 <code>%USERPROFILE%\.ai-team-os</code> —— 商店版刻意把資料放在 <code>%APPDATA%</code> 之外，這樣解除安裝就不會把它一起刪掉。你可以設定 <code>TEAMOS_HOME</code> 環境變數把它搬到別的地方。這個資料夾裡有：</p>
   <ul>
-    <li><code>vault\</code> —— 已儲存的憑證（API 金鑰、通知用的 webhook 網址、GitHub token），用 Windows DPAPI 綁你的 Windows 使用者帳戶加密；</li>
-    <li><code>runs\runs.db</code> —— 執行紀錄、步驟事件、費用帳本、任務規格的版本、通知，以及產物清單；</li>
+    <li><code>vault\</code> —— 已儲存的憑證（API 金鑰、通知用的 webhook 網址、GitHub token），每一個值都用 Windows DPAPI 綁你的 Windows 使用者帳戶加密。旁邊的 <code>vault\vault.db</code> 沒有加密，記著每一把憑證的名字、版本與狀態（使用中、停用、已撤銷）、專案綁定，以及每一次使用、每一次變更的紀錄：哪一把、從哪一層哪一版或哪個環境變數拿的、給哪個專案的哪一趟執行。被停用、撤銷或標成外洩的值，只記一個加了鑰匙的雜湊，不記值本身，同一個值換個地方再放進來也會被擋下；算雜湊的那把鑰匙本身也用 DPAPI 加密；</li>
+    <li><code>runs\runs.db</code> —— 執行紀錄、步驟事件、費用帳本、任務規格的版本、通知，以及產物清單；另外每叫一次模型就記一筆（任務步驟、對話、圓桌、計畫草稿、對話摘要都算）：哪個專案、哪顆模型、token 數、估算的費用，不記送了什麼內容；還有每個專案設的本月預算與每分鐘次數上限；</li>
     <li><code>registry.db</code> —— 你登記過的工作區與專案；</li>
     <li><code>packages\packages.db</code> —— 你從檔案裝的套件：裝了哪些、哪一版、誰簽的、有沒有停用、需要哪些權限，以及每一次安裝、更新、回到上一版、解除安裝的紀錄；</li>
     <li><code>packages\store\</code> —— 每個裝好的套件版本的 <code>.atm</code> 原檔，原封不動存著，檔名是它的 SHA-256 雜湊值；</li>
@@ -351,11 +372,15 @@
     <li><code>modules\feature.chat\data.db</code> —— 你跟 AI 模型的對話：你打的字、模型的回覆、附件的文字內容，以及每一則用了哪個模型、花了多少錢。你貼進對話的任何東西都會存在這裡；</li>
     <li><code>modules\feature.roundtable\data.db</code> —— 圓桌的決策紀錄；</li>
     <li><code>modules\feature.automation\data.db</code> —— 無人值守的帳，以及它送過的通知（送不出去的也記）；</li>
-    <li><code>artifacts\</code> —— 任務步驟產生的檔案內容；</li>
+    <li><code>modules\feature.tasks\blobs\</code> —— 任務步驟產生的檔案內容。內容裡有那一趟用到的祕密的檔案不會存，只記一個加了鑰匙的雜湊。舊版存的內容可能還在 <code>artifacts\</code>，要等 Tasks 功能把它搬過去（Tasks 停用的時候就一直留在那裡）；</li>
     <li><code>browser-profiles\</code> —— <code>browser</code> 步驟用的瀏覽器登入狀態，同樣用 Windows DPAPI 加密；</li>
     <li><code>recorded\</code> —— 在瀏覽器上錄出來的任務草稿，純文字。裡面可能有你在表單欄位打過的值；密碼欄位一律不記；</li>
-    <li><code>logs\</code> —— 故障紀錄。寫進去之前會先遮掉長得像金鑰的字串，但任務標題和錯誤訊息可能還在；</li>
-    <li><code>platform.json</code> 與 <code>modules.json</code> —— 程式設定，以及你關掉了哪些模組；</li>
+    <li><code>logs\</code> —— 故障紀錄。寫進去之前，會先遮掉本程式用過的憑證值和長得像金鑰的字串，但任務標題和錯誤訊息可能還在；</li>
+    <li><code>platform.json</code>、<code>modules.json</code>、<code>routing.json</code> 與 <code>unattended.json</code> —— 程式設定、你關掉了哪些模組、挑模型的路由規則，以及無人值守的設定（通知的 webhook 網址不存在這裡，只記它在 Vault 裡的名字）；</li>
+    <li><code>team-os.json</code> —— 你另外建的每個工作區可以用哪些功能模組、收哪幾層發行者的套件（只記代號）；</li>
+    <li><code>home.json</code> —— 資料夾格式的版本，以及上一次打開它的電腦名稱和 Windows 使用者名稱；</li>
+    <li><code>ui.json</code> —— 畫面外觀：主題、字級、側邊欄、自訂顏色、背景圖的設定和開始頁的排列（只有選項值）；</li>
+    <li><code>ui-bg</code> —— 你選的背景圖（有選才有）：程式先把它縮小（長邊最多 2,560 像素）、重新存成 WebP 再存下來，照片裡的拍攝資訊（相機、拍攝地點等）會一起拿掉。這張圖只用來畫畫面，不會送到任何地方；</li>
     <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
   </ul>
   <p>本程式不會把這個資料夾上傳到任何地方。裡面的資料只會沿著第五節列的路線送出，例如繼續一段對話時，前面的訊息會跟著新訊息一起送出；記憶打開時，這一席讀得到的記憶會跟著 <code>agent</code> 步驟的 prompt 一起送出。</p>
@@ -369,7 +394,7 @@
       <tr>
         <td><code>agent</code></td>
         <td>步驟裡的指示、這個席次讀得到的檔案內容與 diff；記憶打開時，再加上這一席在這個工作區讀得到的記憶（有爭議的先放，再照分數排，塞到字數上限為止；不是照這個任務挑的）。</td>
-        <td>你替這個步驟選的模型服務。用本機 Ollama 模型（內建範本預設就是），而且連的是它預設的本機位址，這些資料都不會離開這台電腦。只有你選了雲端模型、而且拿得到它的 API 金鑰（存在 Vault 或設在環境變數），資料才會送到那一家。如果你用環境變數（例如 <code>OLLAMA_BASE_URL</code>）把位址改到別台電腦或代理伺服器，資料就送到那裡。</td>
+        <td>你替這個步驟選的模型服務。用本機 Ollama 模型（內建範本預設就是），連的是它預設的本機位址、而且模型權重就在這台電腦上，這些資料都不會離開這台電腦；Ollama 自己的雲端模型（例如名稱以 <code>-cloud</code> 結尾的）雖然也經過同一個本機位址，資料會被轉送到 Ollama 的雲端服務。只有你選了雲端模型、而且拿得到它的 API 金鑰（存在 Vault 或設在環境變數），資料才會送到那一家。如果你用環境變數（例如 <code>OLLAMA_BASE_URL</code>）把位址改到別台電腦或代理伺服器，資料就送到那裡。</td>
       </tr>
       <tr>
         <td><code>http</code></td>
@@ -378,7 +403,7 @@
       </tr>
       <tr>
         <td><code>browser</code></td>
-        <td>導向動作、六個許可動詞在你指定的頁面上做的事，以及存著的登入狀態：它的 cookie 會跟著網頁的請求送出。</td>
+        <td>導向動作、許可的動詞在你指定的頁面上做的事，以及存著的登入狀態：它的 cookie 會跟著網頁的請求送出。</td>
         <td>你在規格裡寫的主機。導向之前會先過三道主機清單檢查，被轉址到別的主機就停下來。網頁自己載入的圖片、腳本和它發出的請求，會連到網站自己選的地方，本程式不擋。</td>
       </tr>
       <tr>
@@ -406,8 +431,8 @@
     <tbody>
       <tr>
         <td>對話</td>
-        <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上平台記得的事。</td>
-        <td>你替這段對話選的模型。本機 Ollama 模型不會離開這台電腦；雲端模型就送到那一家。模型的位址被環境變數改掉的話，就送到改過的位址。</td>
+        <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上這個工作區記得的事（不含專案層的），最多約 1,200 token。</td>
+        <td>你替這段對話選的模型。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。其他模型（雲端模型、Ollama 的雲端模型、別台電腦上的 Ollama，或是用環境變數改過位址的）會把資料送到那一家或那個位址，送之前桌面程式會先跳自己的確認視窗，寫明是哪顆模型、實際送到哪個位址。確認一次涵蓋這一則和之後 29 則（同一顆模型）；換模型、刪掉對話或重開程式都會再問一次，要帶記憶也要在確認視窗同意過。</td>
       </tr>
       <tr>
         <td>通知（預設關閉）</td>
@@ -425,6 +450,16 @@
         <td>本程式叫 git 建席次的工作目錄、提交、合併、落地的時候，git 會跑你 repo 和電腦上設定的 hook 與 filter，它們設定連到哪裡就連到哪裡。除了 <code>push</code> 步驟，本程式自己不會叫 git 連網。</td>
       </tr>
       <tr>
+        <td>從網址下載背景圖（你貼了網址、在確認視窗按了確定才連）</td>
+        <td>一個下載圖片的請求：網址本身（網址裡寫的東西會送到那個網站），以及一個固定的程式名稱（User-Agent）。本程式不會另外附上任何關於你或你的任務的資料；不過跟任何連線一樣，那個網站看得到這台電腦對外的 IP，你用的 DNS 伺服器看得到網站名稱。</td>
+        <td>你在設定 →「外觀與主題」貼上的那個網址，而且要等桌面程式在確認視窗列出完整網址、你按了確定才連。只收 <code>https</code>、而且解析出來是公開 IP 的網址。對方要轉址就不下載，會告訴你它想轉去哪裡。超過 15 秒或 8 MB 就停止。下載的圖縮小之後存成 <code>ui-bg</code>（見第四節）。</td>
+      </tr>
+      <tr>
+        <td>查 Ollama 有沒有在跑</td>
+        <td>一個查詢已安裝模型清單的請求，不帶任何關於你或你的任務的資料。</td>
+        <td>Ollama 的位址：預設是這台電腦（<code>127.0.0.1:11434</code>）；你用 <code>OLLAMA_BASE_URL</code> 環境變數改過的話，就是改過的位址（新手引導和體檢查詢時，會拿掉位址裡的帳號、密碼和路徑）。程式打開時、回到開始頁時（「先做這 3 步」要用）、跑體檢時，以及對話頁列出模型清單時，都會問一次。</td>
+      </tr>
+      <tr>
         <td>外部連結（你點了才開）</td>
         <td>你點的那個網址；之後就是你的瀏覽器和那個網站之間的事（它的 cookie、它載入的內容）。</td>
         <td>連結指向的網站，例如這份隱私權政策或支援頁，用你電腦預設的瀏覽器開啟。</td>
@@ -433,9 +468,11 @@
   </table>
   </div>
   <p>送出去的內容，就是你自己放進去的內容：prompt 文字、你挑的檔案和專案上下文、你打的訊息。本程式不會掃你的硬碟，不會上傳你沒有指名的檔案，也不會送出上面兩張表以外的東西。</p>
+  <p><b>確認視窗由桌面程式自己跳。</b>開始、續跑或重做一個任務、批准一個在等你的步驟、把對話送出這台電腦、下載背景圖，還有改設定、刪掉救不回來的東西這類決定，都會先跳確認視窗。視窗內容是桌面程式照「真的會做的事」排出來的，不是顯示模型輸出和網頁內容的那個畫面給的；你按了確定才會做。內容太長、Windows 內建的確認視窗放不下時，會改開一個完整內容的視窗，捲到最底下才按得了「確定」。</p>
 
   <h3 id="zh-6">六、憑證</h3>
   <p>憑證放在本機的 Vault，用 Windows DPAPI 加密，綁定你的 Windows 使用者帳戶。Vault 支援 system、user、project 三層 profile，也支援輪換。明文祕密不會寫進 log、不會顯示在畫面上、不會出現在命令列。</p>
+  <p>每一次用憑證都經過同一個關卡。你停用或撤銷的憑證不會被拿來用；同一個值就算換個名字、換一層存，或是設在環境變數裡，也一樣會被擋下。專案可以綁定成「不退回」：專案自己的那一把不能用時，不會改用你使用者層或系統層的金鑰。Vault 在、卻打不開的時候，一把憑證都不用，連環境變數裡的也不用。環境變數裡的 API 金鑰，程式一啟動就收進來、從它自己的環境拿掉，所以 <code>command</code> 步驟啟動的程式拿不到。寫進 log、錯誤紀錄或回報之前，以及送給模型之前，本程式用過的憑證值都會先遮掉。<code>browser</code> 步驟要截圖時，如果當下頁面上看得到的文字裡有這一步填的密碼、登入 token 或本程式用過的憑證，這張圖就不存，那一步算失敗；畫在圖片裡的字沒辦法這樣檢查。</p>
   <p>你可以自行選擇要不要存第三方服務的憑證。Vault 能存的憑證種類包含 DeepSeek、Meta/Llama、DashScope/Qwen、Z.ai/GLM、Gemini、OpenAI、Anthropic 等服務的 API 金鑰、Telegram、Slack 這一類的通知 webhook 網址，以及 GitHub token。webhook 網址本身就是祕密，所以也當祕密存。GitHub token 只有從原始碼執行時才有的一個命令列工具會用到：它把遮蔽過的交接包貼到你指定的 GitHub issue 或 pull request。Microsoft Store 與安裝檔版本不會用到它。</p>
   <div class="callout warn">
     <p>上面這些服務沒有一個是預設啟用的。ai-team-os 與其中任何一家都沒有隸屬、合作或官方授權關係，也不是任何一家的官方用戶端。存了憑證不等於送出任何東西：憑證只有在你寫的步驟去呼叫它所屬的服務時才會被用到。</p>
@@ -448,36 +485,39 @@
   <p>本程式會在你登記的專案內，以及自己的資料夾內讀寫檔案。<code>write_file</code> 步驟寫在規格指定的位置；<code>git_commit</code> 步驟在那個席次被分配到的 git worktree 裡 commit。檔案只有在你寫的步驟指名它時才會被讀取。本程式不會上傳你硬碟裡的內容。</p>
 
   <h3 id="zh-9">九、本機命令</h3>
-  <p><code>command</code> 步驟執行的，是你自己寫進任務規格的那一行命令，在你的電腦上、用你的 Windows 帳戶執行。本程式不會下載程式回來執行，也不會從網路上抓程式碼來跑。高風險動作會先停下來等你批准；超出授予權限等級的動作會被拒絕，而且不產生任何副作用。</p>
+  <p><code>command</code> 步驟執行的，是你自己寫進任務規格的那一行命令，在你的電腦上、用你的 Windows 帳戶執行。本程式不會下載程式回來執行，也不會從網路上抓程式碼來跑。高風險動作會先停下來，在桌面程式的確認視窗列出這一步真的會用的每一個參數，等你批准；超出授予權限等級的動作會被拒絕，而且不產生任何副作用。</p>
   <p><code>command</code> 步驟只能啟動內建允許清單上的程式；執行腳本，或任何可能跑程式碼的直譯器命令，都要你批准。如果那支程式自己會連網路，像 <code>git fetch</code> 或 <code>npm install</code>，它連的是它自己設定的位址，本程式不會另外加資料進去。</p>
-  <p><b>套件。</b>在「設定 → 套件」可以從你自己的硬碟挑一個套件檔（<code>.atm</code>）來安裝。套件裡只有任務範本，是資料不是程式，所以安裝時什麼都不會執行。範本只是幫你填好一份任務規格，裡面的步驟要等你開始那個任務才會跑，批准規則跟其他任務一樣。本程式不會從網路下載套件，也沒有套件商店；安裝、更新、回到上一版、解除安裝都不會送出任何東西。安裝前會先把範本會用到的權限列給你看。每次讀取套件，都會用程式內建的信任發行者金鑰清單重新驗一次簽章；沒有簽章、或簽章金鑰不在清單上的套件，要在設定裡打開開發者模式才裝得進去，開發者模式預設是關的。</p>
+  <p><b>套件。</b>在設定 →「功能模組」的「套件」可以從你自己的硬碟挑一個套件檔（<code>.atm</code>）來安裝。套件裡只有任務範本，是資料不是程式，所以安裝時什麼都不會執行。範本只是幫你填好一份任務規格，裡面的步驟要等你開始那個任務才會跑，批准規則跟其他任務一樣。本程式不會從網路下載套件，也沒有套件商店；安裝、更新、回到上一版、解除安裝都不會送出任何東西。安裝前會先把範本會用到的權限列給你看。每次讀取套件，都會用程式內建的信任發行者金鑰清單重新驗一次簽章；沒有簽章、或簽章金鑰不在清單上的套件，要在設定裡打開開發者模式才裝得進去，開發者模式預設是關的。</p>
 
   <h3 id="zh-10">十、即時生成式 AI</h3>
   <p><code>agent</code> 步驟和對話會依你的 prompt，由模型即時產生文字。你看到的生成內容沒有經過開發者事先審閱，可能不正確、可能冒犯人，也可能不適合你的用途。不要不檢查就直接採用。</p>
-  <p>你可以直接在程式裡回報不當的 AI 生成內容：主畫面 →「<b>隱私、支援與回報</b>」→「<b>回報不當的 AI 產出</b>」。選一個理由，可以補上該次執行編號與步驟編號、再寫幾句說明，然後按「<b>先看會送出什麼</b>」，在任何東西被寫下來之前先把整份內容看過。</p>
-  <p>一筆回報只帶編號：回報編號、時間、程式版本、理由、執行編號、步驟編號，以及你寫的說明。沒有 prompt、沒有檔案內容、沒有完整對話、沒有憑證。你寫的說明還會再洗一次 —— 看起來像 API 金鑰、電子郵件、網址、Windows 或 UNC 路徑的片段，以及過長的連續字串，一律換掉，超過 500 字截斷；洗掉了什麼會列給你看。</p>
+  <p>你可以直接在程式裡回報不當的 AI 生成內容：設定 →「<b>隱私與回報</b>」→「<b>回報不當的 AI 產出</b>」。選一個理由，可以補上該次執行編號與步驟編號、再寫幾句說明，然後按「<b>先看會送出什麼</b>」，在任何東西被寫下來之前先把整份內容看過。</p>
+  <p>一筆回報只帶編號：回報編號、時間、程式版本、理由、執行編號、步驟編號，以及你寫的說明。沒有 prompt、沒有檔案內容、沒有完整對話、沒有憑證。你寫的說明還會再洗一次 —— 本程式用過的憑證值、看起來像 API 金鑰、電子郵件、網址、Windows 或 UNC 路徑的片段，以及過長的連續字串，一律換掉，超過 500 字截斷；洗掉了什麼會列給你看。</p>
   <p>回報會寫成資料夾裡 <code>reports\</code> 的一個檔案。這一版沒有回報伺服器，所以不會有任何東西被送出去：要不要把那個檔寄到支援信箱，由你決定。支援頁寫著同一條路，給打不開程式的人看。</p>
 
   <h3 id="zh-11">十一、資料分享與販售</h3>
   <p>開發者收不到任何使用者資料，因此沒有東西可以分享，也沒有東西可以販售。資料只會去第五節列的、你自己選的目的地。</p>
 
   <h3 id="zh-12">十二、保存與刪除</h3>
-  <p>全部存在本機，而且會一直留著，直到你自己刪掉。刪掉資料夾就等於刪掉全部的程式資料，包含 Vault、執行紀錄、費用帳本與產物。備份還原是手動的，由你自己觸發；備份寫到你指定的位置。伺服器端沒有副本，所以也沒有「請開發者刪除」這件事。</p>
+  <p>全部存在本機，而且會一直留著，直到你自己刪掉。刪掉資料夾就等於刪掉全部的程式資料，包含 Vault、執行紀錄、費用帳本與產物。解除安裝刻意不刪資料夾：「移除程式」跟「丟掉我的資料」是兩件事。程式不會自動備份，只有你自己建的備份才存在，而且放在你選的資料夾。這一版建備份、還原要用原始碼附的命令列工具；安裝版只能在設定 →「備份與資料」驗一份現成的備份。伺服器端沒有副本，所以也沒有「請開發者刪除」這件事。</p>
+  <p>在程式裡個別刪：設定 →「備份與資料」先按「清產物內容（先試算）」，看哪些產物內容已經沒有任何執行紀錄引用，再按「真的清」，確認後刪除；設定 →「外觀與主題」按「拿掉你的圖」，背景圖就刪掉。</p>
   <p>解除安裝套件會刪掉它的各個版本和原檔。裝過、移除過哪些套件的紀錄會留在 <code>packages\packages.db</code>，直到你刪掉資料夾。</p>
 
   <h3 id="zh-13">十三、你可以控制的事</h3>
   <ul>
     <li>隨時刪掉整個資料夾，或裡面的任何一個檔案。</li>
-    <li>移除或輪換任何一筆已存的憑證。</li>
+    <li>在設定 →「模型與金鑰」換掉、停用、恢復或撤銷任何一把已存的憑證；撤銷會把它每一版的加密值都從磁碟上抹掉。</li>
     <li>決定一個任務裡有哪些步驟。你沒寫的步驟永遠不會跑。</li>
     <li>在批准閘門逐項批准或拒絕高風險動作。</li>
     <li>保持無人值守模式關閉，它預設就是關的。無人值守可以排程、額度回來自動再試、崩潰自動續跑，但它不批准任何事 —— 跑到要批准就會停。</li>
     <li>設定預算上限，讓一趟執行在你指定的金額停下來。</li>
-    <li>替 <code>agent</code> 步驟和對話選本機 Ollama 模型、位址維持預設，你的 prompt 就不會離開這台電腦。</li>
+    <li>替 <code>agent</code> 步驟和對話選權重在這台電腦上的本機 Ollama 模型（不是 Ollama 的雲端模型）、位址維持預設，你的 prompt 就不會離開這台電腦。</li>
     <li>通知和檢查更新預設都是關的，需要再打開。</li>
-    <li>在「設定 → 模組」關掉用不到的功能。</li>
-    <li>只裝你自己挑的套件檔，也可以隨時在「設定 → 套件」停用或解除安裝。</li>
-    <li>隨時打開「隱私、支援與回報」，看你這一版<b>實際</b>算出來的結果：資料放在這台電腦的哪裡、哪些是加密的、哪幾種步驟會把東西送出這台機器。</li>
+    <li>在設定 →「功能模組」關掉用不到的功能。</li>
+    <li>在設定 →「工作區與專案」限制你另外建的每個工作區能用哪些功能模組、收哪幾層發行者的套件。</li>
+    <li>只裝你自己挑的套件檔，也可以隨時在設定 →「功能模組」的「套件」停用或解除安裝。</li>
+    <li>背景圖要不要用自己的，由你決定：從網址下載每次都要確認，按「拿掉你的圖」就刪掉存著的那一張。</li>
+    <li>隨時打開設定 →「隱私與回報」，看你這一版<b>實際</b>算出來的結果：資料放在這台電腦的哪裡、哪些是加密的、哪幾種步驟會把東西送出這台機器。</li>
     <li>回報你認為不當的 AI 產出，而且在它被寫下來之前先看過整份內容。</li>
   </ul>
 
@@ -495,7 +535,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-10-11 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-08 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
