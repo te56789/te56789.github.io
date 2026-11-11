@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-11-08<br>
+    <b>Last updated / 最後更新日期：</b>2026-11-11<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -217,6 +217,11 @@
   <table>
     <thead><tr><th>Feature</th><th>What is sent</th><th>Where it goes</th></tr></thead>
     <tbody>
+      <tr>
+        <td>AI step planning (「讓 AI 排步驟」, only when you press it)</td>
+        <td>The sentence you wrote on the New task page and a fixed instruction text (on Windows it also says the computer runs Windows, so the command examples fit). If you picked a project whose folder is a git repository, also the number of files in its latest commit and the list of their names (names only, relative to the project folder, at most 200; never file contents, never the full folder path on your computer, never the project's name). Names longer than 200 characters or containing invisible characters are not sent.</td>
+        <td>The default model for agent steps, set in the platform settings under Settings → 「進階」 (Advanced). A local Ollama model whose weights are on this computer keeps it on your computer. Any other model sends it to that provider or address, and before every such request the desktop app asks you in its own confirmation window, which names the model and lists every file name that would be sent. Only a draft comes back: nothing is run until you press 「開始執行」 (Start), which asks again.</td>
+      </tr>
       <tr>
         <td>Chat</td>
         <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the workspace's remembered items (not the project-level ones), up to about 1,200 tokens.</td>
@@ -432,6 +437,11 @@
     <thead><tr><th>功能</th><th>送出什麼</th><th>送去哪裡</th></tr></thead>
     <tbody>
       <tr>
+        <td>讓 AI 排步驟（按了才會送）</td>
+        <td>你在新任務頁寫的那一句，加上一段固定的說明文字（Windows 上會多一句「這台電腦是 Windows」，讓命令的寫法對得上）。選了專案、而且專案資料夾是 git repo 的話，再加上最新提交裡共有幾個檔和檔名清單（只有名字、專案資料夾裡的相對路徑、最多 200 個；不送檔案內容、不送這台電腦上資料夾的完整路徑、不送專案名稱）。超過 200 字或有看不見的字的檔名不送。</td>
+        <td>設定 →「進階」平台設定裡 agent 步驟的預設模型。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。其他模型會把資料送到那一家或那個位址，每一次送之前桌面程式都會跳自己的確認視窗，寫明是哪顆模型，並列出會送出的每一個檔名。拿回來的只有一份草稿：你按「開始執行」才會跑（那時候還會再確認一次）。</td>
+      </tr>
+      <tr>
         <td>對話</td>
         <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上這個工作區記得的事（不含專案層的），最多約 1,200 token。</td>
         <td>你替這段對話選的模型。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。其他模型（雲端模型、Ollama 的雲端模型、別台電腦上的 Ollama，或是用環境變數改過位址的）會把資料送到那一家或那個位址，送之前桌面程式會先跳自己的確認視窗，寫明是哪顆模型、實際送到哪個位址。確認一次涵蓋這一則和之後 29 則（同一顆模型）；換模型、刪掉對話或重開程式都會再問一次，要帶記憶也要在確認視窗同意過。</td>
@@ -537,7 +547,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-08 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-11 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
