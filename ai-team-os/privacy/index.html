@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-11-11<br>
+    <b>Last updated / 最後更新日期：</b>2026-11-12<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -156,7 +156,7 @@
     <li><code>packages\packages.db</code> — the packages you installed from a file: which ones, which version, who signed them, whether they are switched off, the permissions they need, and a log of every install, update, rollback and uninstall;</li>
     <li><code>packages\store\</code> — the original <code>.atm</code> file of each installed package version, kept unchanged and named after its SHA-256 hash;</li>
     <li><code>memory.db</code> — cross-task memory: what the platform remembers and where each item came from. It can contain text read back from websites you automate, such as error messages and excerpts of results;</li>
-    <li><code>modules\feature.chat\data.db</code> — your conversations with AI models: what you typed, the replies, the text of attached files, and which model each message used and what it cost. Anything you paste into a conversation is kept here;</li>
+    <li><code>modules\feature.chat\data.db</code> — your conversations with AI models: what you typed, the replies, the text of attached files, the images you attached (stored as they are and deleted together with the conversation), and which model each message used and what it cost. Anything you paste into a conversation is kept here;</li>
     <li><code>modules\feature.roundtable\data.db</code> — roundtable decision records;</li>
     <li><code>modules\feature.automation\data.db</code> — the unattended-mode ledger and the notifications it sent, including the ones that failed;</li>
     <li><code>modules\feature.tasks\blobs\</code> — the content of files produced by task steps. A file whose content contains a secret used by that run is not stored; only a keyed hash of it is recorded. Content saved by earlier versions can still be in <code>artifacts\</code> until the Tasks feature moves it (it stays there while Tasks is switched off);</li>
@@ -224,8 +224,8 @@
       </tr>
       <tr>
         <td>Chat</td>
-        <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the workspace's remembered items (not the project-level ones), up to about 1,200 tokens.</td>
-        <td>The model you picked for that conversation. A local Ollama model whose weights are on this computer keeps it on your computer. Any other model (a cloud model, an Ollama cloud model, Ollama on another machine, or an address changed with an environment variable) sends it to that provider or address, and before it does, the desktop app asks you in its own confirmation window, which names the model and the actual address. One confirmation covers that message and the next 29 to the same model; changing the model, deleting the conversation or restarting the application asks again, and including memory has to be agreed to in a confirmation as well.</td>
+        <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the workspace's remembered items (not the project-level ones), up to about 1,200 tokens. Images you attach are sent whole, exactly as they are, and only to a model marked as able to see images; passwords or keys visible in an image are not masked. Later messages in the same conversation send up to 10 of the earlier images again.</td>
+        <td>The model you picked for that conversation. A local Ollama model whose weights are on this computer keeps it on your computer. Any other model (a cloud model, an Ollama cloud model, Ollama on another machine, or an address changed with an environment variable) sends it to that provider or address, and before it does, the desktop app asks you in its own confirmation window, which names the model and the actual address and lists each attached image. One confirmation covers that message and the next 29 to the same model; changing the model, deleting the conversation or restarting the application asks again, and including memory or images has to be agreed to in a confirmation as well.</td>
       </tr>
       <tr>
         <td>Notifications (off by default)</td>
@@ -375,7 +375,7 @@
     <li><code>packages\packages.db</code> —— 你從檔案裝的套件：裝了哪些、哪一版、誰簽的、有沒有停用、需要哪些權限，以及每一次安裝、更新、回到上一版、解除安裝的紀錄；</li>
     <li><code>packages\store\</code> —— 每個裝好的套件版本的 <code>.atm</code> 原檔，原封不動存著，檔名是它的 SHA-256 雜湊值；</li>
     <li><code>memory.db</code> —— 跨任務的記憶：平台記住的事，以及每一條的來源。裡面可能有從你自動化的網站上讀回來的文字，例如錯誤訊息和產物片段；</li>
-    <li><code>modules\feature.chat\data.db</code> —— 你跟 AI 模型的對話：你打的字、模型的回覆、附件的文字內容，以及每一則用了哪個模型、花了多少錢。你貼進對話的任何東西都會存在這裡；</li>
+    <li><code>modules\feature.chat\data.db</code> —— 你跟 AI 模型的對話：你打的字、模型的回覆、附件的文字內容、附上的圖片（原樣存著，刪掉那段對話就一起刪掉），以及每一則用了哪個模型、花了多少錢。你貼進對話的任何東西都會存在這裡；</li>
     <li><code>modules\feature.roundtable\data.db</code> —— 圓桌的決策紀錄；</li>
     <li><code>modules\feature.automation\data.db</code> —— 無人值守的帳，以及它送過的通知（送不出去的也記）；</li>
     <li><code>modules\feature.tasks\blobs\</code> —— 任務步驟產生的檔案內容。內容裡有那一趟用到的祕密的檔案不會存，只記一個加了鑰匙的雜湊。舊版存的內容可能還在 <code>artifacts\</code>，要等 Tasks 功能把它搬過去（Tasks 停用的時候就一直留在那裡）；</li>
@@ -443,8 +443,8 @@
       </tr>
       <tr>
         <td>對話</td>
-        <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上這個工作區記得的事（不含專案層的），最多約 1,200 token。</td>
-        <td>你替這段對話選的模型。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。其他模型（雲端模型、Ollama 的雲端模型、別台電腦上的 Ollama，或是用環境變數改過位址的）會把資料送到那一家或那個位址，送之前桌面程式會先跳自己的確認視窗，寫明是哪顆模型、實際送到哪個位址。確認一次涵蓋這一則和之後 29 則（同一顆模型）；換模型、刪掉對話或重開程式都會再問一次，要帶記憶也要在確認視窗同意過。</td>
+        <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上這個工作區記得的事（不含專案層的），最多約 1,200 token。附上的圖片會整張原樣送出，而且只送給標著看得懂圖片的模型；圖片裡拍到的密碼、金鑰不會被遮。同一段對話之後的訊息，會再帶上前面最多 10 張圖片。</td>
+        <td>你替這段對話選的模型。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。其他模型（雲端模型、Ollama 的雲端模型、別台電腦上的 Ollama，或是用環境變數改過位址的）會把資料送到那一家或那個位址，送之前桌面程式會先跳自己的確認視窗，寫明是哪顆模型、實際送到哪個位址，附了圖片也會逐張列出。確認一次涵蓋這一則和之後 29 則（同一顆模型）；換模型、刪掉對話或重開程式都會再問一次，要帶記憶或附圖片也要在確認視窗同意過。</td>
       </tr>
       <tr>
         <td>通知（預設關閉）</td>
@@ -547,7 +547,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-11 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-12 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
