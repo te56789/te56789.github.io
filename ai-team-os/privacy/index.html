@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-11-21<br>
+    <b>Last updated / 最後更新日期：</b>2026-11-22<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -168,7 +168,7 @@
     <li><code>team-os.json</code> — for each additional workspace you created, which feature modules and which package publishers it may use (identifiers only);</li>
     <li><code>home.json</code> — the data folder's format version, and the computer name and Windows user name that last opened it;</li>
     <li><code>model-prices.json</code> — the model prices you entered in Settings (the price of each model, where the figure came from and when you checked it; prices only, nothing about your tasks);</li>
-    <li><code>ui.json</code> — how the screen looks: theme, text size, sidebar, custom colours, background settings and start-page layout (option values only);</li>
+    <li><code>ui.json</code> — how the screen looks: theme, text size, sidebar, custom colours, background settings and start-page layout, plus the read-aloud settings and whether push-to-talk is on (option values only);</li>
     <li><code>ui-bg</code> — the background image you chose, if you chose one: a copy that the application shrinks (longest side at most 2,560 pixels) and re-encodes as WebP, which drops the photo's embedded details such as camera and location data. It is used only to draw the screen and is never sent anywhere;</li>
     <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
   </ul>
@@ -227,6 +227,21 @@
         <td>Chat</td>
         <td>What you type, the text of files you attach, and the earlier messages of that conversation; if you tick “include memory”, also the workspace's remembered items (not the project-level ones), up to about 1,200 tokens. Images you attach are sent whole, exactly as they are, and only to a model marked as able to see images; passwords or keys visible in an image are not masked. Later messages in the same conversation send up to 10 of the earlier images again.</td>
         <td>The model you picked for that conversation. A local Ollama model whose weights are on this computer keeps it on your computer. Any other model (a cloud model, an Ollama cloud model, Ollama on another machine, or an address changed with an environment variable) sends it to that provider or address, and before it does, the desktop app asks you in its own confirmation window, which names the model and the actual address and lists each attached image. One confirmation covers that message and the next 29 to the same model; changing the model, deleting the conversation or restarting the application asks again, and including memory or images has to be agreed to in a confirmation as well.</td>
+      </tr>
+      <tr>
+        <td>Reading replies aloud (「念出來」, and the two automatic read-aloud switches, off by default)</td>
+        <td>Nothing leaves this computer. The text is masked once more (anything that looks like a key is replaced with a description) and tidied up, then spoken by a Chinese voice installed in Windows. Voices that would send the text to an online service are not offered.</td>
+        <td>None: the speech is produced on this computer.</td>
+      </tr>
+      <tr>
+        <td>Push-to-talk (「按住說話」, off by default; turning it on asks you in the desktop app's own confirmation window)</td>
+        <td>The recording made while you hold the button (at most about 60 seconds, 2 MB), the model name, the language code <code>zh</code> and a fixed instruction text (「以下是台灣的繁體中文。」, asking for Traditional Chinese). The microphone is used only while you hold the button, and Windows' own microphone permission still applies. The recording is not saved to disk. The text that comes back is masked and put into the input box; it is sent only if you then send it.</td>
+        <td>OpenAI's transcription service (<code>api.openai.com/v1/audio/transcriptions</code>), using the OpenAI API key you stored in the vault; it counts against your own OpenAI bill. Redirects are not followed, and a request with no reply within 30 seconds is cancelled.</td>
+      </tr>
+      <tr>
+        <td>Opening a roundtable from the Roundtable page (only when you press 「開一場圓桌」)</td>
+        <td>The question you wrote, a fixed instruction text for each seat's role (chair, member, devil's advocate), and from the second round on, what the other seats in the same roundtable answered earlier.</td>
+        <td>The models you picked for the seats (2 to 4). A local Ollama model whose weights are on this computer keeps it on your computer. If any seat uses another model, the desktop app asks you in its own confirmation window every time, listing which model each seat uses and where its data goes, the most calls it can make, the spending and time limits, and that the result is saved as a decision record and written to memory.</td>
       </tr>
       <tr>
         <td>Notifications (off by default)</td>
@@ -393,7 +408,7 @@
     <li><code>team-os.json</code> —— 你另外建的每個工作區可以用哪些功能模組、收哪幾層發行者的套件（只記代號）；</li>
     <li><code>home.json</code> —— 資料夾格式的版本，以及上一次打開它的電腦名稱和 Windows 使用者名稱；</li>
     <li><code>model-prices.json</code> —— 你在設定裡填的模型價目（每一顆模型的價錢、來源與查核日期；只有價錢，不含任務內容）；</li>
-    <li><code>ui.json</code> —— 畫面外觀：主題、字級、側邊欄、自訂顏色、背景圖的設定和開始頁的排列（只有選項值）；</li>
+    <li><code>ui.json</code> —— 畫面外觀：主題、字級、側邊欄、自訂顏色、背景圖的設定、開始頁的排列，以及念出來的設定和按住說話開了沒（只有選項值）；</li>
     <li><code>ui-bg</code> —— 你選的背景圖（有選才有）：程式先把它縮小（長邊最多 2,560 像素）、重新存成 WebP 再存下來，照片裡的拍攝資訊（相機、拍攝地點等）會一起拿掉。這張圖只用來畫畫面，不會送到任何地方；</li>
     <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
   </ul>
@@ -452,6 +467,21 @@
         <td>對話</td>
         <td>你打的字、附加檔案的文字內容、這段對話前面的訊息；勾了「帶記憶」的話，再加上這個工作區記得的事（不含專案層的），最多約 1,200 token。附上的圖片會整張原樣送出，而且只送給標著看得懂圖片的模型；圖片裡拍到的密碼、金鑰不會被遮。同一段對話之後的訊息，會再帶上前面最多 10 張圖片。</td>
         <td>你替這段對話選的模型。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。其他模型（雲端模型、Ollama 的雲端模型、別台電腦上的 Ollama，或是用環境變數改過位址的）會把資料送到那一家或那個位址，送之前桌面程式會先跳自己的確認視窗，寫明是哪顆模型、實際送到哪個位址，附了圖片也會逐張列出。確認一次涵蓋這一則和之後 29 則（同一顆模型）；換模型、刪掉對話或重開程式都會再問一次，要帶記憶或附圖片也要在確認視窗同意過。</td>
+      </tr>
+      <tr>
+        <td>把回覆念出來（「念出來」，以及自動念的兩個開關，預設關閉）</td>
+        <td>不會離開這台電腦。要念的字會先再遮一次（像金鑰的一長串換成說明）、整理過，再交給 Windows 裡裝好的中文語音念。會把字送到線上服務的語音不會列出來。</td>
+        <td>沒有：聲音是這台電腦自己合成的。</td>
+      </tr>
+      <tr>
+        <td>按住說話（「按住說話」，預設關閉；打開時桌面程式會先跳自己的確認視窗）</td>
+        <td>按住按鈕那段時間的錄音（最多約 60 秒、2 MB）、模型名稱、語言代碼 <code>zh</code>，以及一句固定的說明（「以下是台灣的繁體中文。」，請它用繁體中文回）。只有按住的時候才會用麥克風，Windows 自己的麥克風權限也照樣有效。錄音不存檔。轉回來的字遮過之後放進輸入框，你按了送出才會送。</td>
+        <td>OpenAI 的轉文字服務（<code>api.openai.com/v1/audio/transcriptions</code>），用你存在 Vault 的 OpenAI 金鑰，算在你自己的 OpenAI 帳單；對方回轉址的話不跟，30 秒沒回就取消。</td>
+      </tr>
+      <tr>
+        <td>從圓桌頁開一場圓桌（你按了「開一場圓桌」才開）</td>
+        <td>你寫的問題、每一席角色的固定說明（主席、成員、唱反調的），以及第二輪起，同一場裡其他席前面的回答。</td>
+        <td>你替各席選的模型（2 到 4 顆）。本機 Ollama 模型、而且權重就在這台電腦上，資料不會離開這台電腦。只要有一席用別的模型，每次開之前桌面程式都會跳自己的確認視窗，列出每一席用哪一顆、送到哪裡、最多問幾次、花費與時間上限，以及結果會存成決定紀錄、寫進記憶。</td>
       </tr>
       <tr>
         <td>通知（預設關閉）</td>
@@ -559,7 +589,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-21 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-22 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
