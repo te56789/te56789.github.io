@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-11-22<br>
+    <b>Last updated / 最後更新日期：</b>2026-11-23<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -168,7 +168,7 @@
     <li><code>team-os.json</code> — for each additional workspace you created, which feature modules and which package publishers it may use (identifiers only);</li>
     <li><code>home.json</code> — the data folder's format version, and the computer name and Windows user name that last opened it;</li>
     <li><code>model-prices.json</code> — the model prices you entered in Settings (the price of each model, where the figure came from and when you checked it; prices only, nothing about your tasks);</li>
-    <li><code>ui.json</code> — how the screen looks: theme, text size, sidebar, custom colours, background settings and start-page layout, plus the read-aloud settings and whether push-to-talk is on (option values only);</li>
+    <li><code>ui.json</code> — how the screen looks: theme, text size, sidebar, custom colours, background settings and start-page layout, plus the read-aloud settings, whether push-to-talk is on and which provider transcribes it (option values only);</li>
     <li><code>ui-bg</code> — the background image you chose, if you chose one: a copy that the application shrinks (longest side at most 2,560 pixels) and re-encodes as WebP, which drops the photo's embedded details such as camera and location data. It is used only to draw the screen and is never sent anywhere;</li>
     <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
   </ul>
@@ -235,8 +235,8 @@
       </tr>
       <tr>
         <td>Push-to-talk (「按住說話」, off by default; turning it on asks you in the desktop app's own confirmation window)</td>
-        <td>The recording made while you hold the button (at most about 60 seconds, 2 MB), the model name, the language code <code>zh</code> and a fixed instruction text (「以下是台灣的繁體中文。」, asking for Traditional Chinese). The microphone is used only while you hold the button, and Windows' own microphone permission still applies. The recording is not saved to disk. The text that comes back is masked and put into the input box; it is sent only if you then send it.</td>
-        <td>OpenAI's transcription service (<code>api.openai.com/v1/audio/transcriptions</code>), using the OpenAI API key you stored in the vault; it counts against your own OpenAI bill. Redirects are not followed, and a request with no reply within 30 seconds is cancelled.</td>
+        <td>The recording made while you hold the button (at most about 60 seconds, 2 MB), the model name and a fixed instruction asking for Traditional Chinese (for OpenAI and Groq: the language code <code>zh</code> and 「以下是台灣的繁體中文。」; for Google Gemini: a short instruction to transcribe the recording word for word in Taiwanese Traditional Chinese). The microphone is used only while you hold the button, and Windows' own microphone permission still applies. The recording is not saved to disk. The text that comes back is masked and put into the input box; it is sent only if you then send it.</td>
+        <td>The one provider you picked under Settings → 「角色與聲音」 → 「轉文字用」 (one at a time): OpenAI's transcription service (<code>api.openai.com/v1/audio/transcriptions</code>), Google Gemini (<code>generativelanguage.googleapis.com</code>, model gemini-3.1-flash-lite; on Google's free tier, Google's terms say it may use the content to improve its products and people may review it, while the paid tier does not), or Groq's transcription service (<code>api.groq.com/openai/v1/audio/transcriptions</code>). It uses that provider's API key you stored in the vault and counts against your own bill with that provider. The addresses are fixed; environment variables do not change them. Switching to another provider while push-to-talk is on asks you again. Redirects are not followed, and a request with no reply within 30 seconds is cancelled.</td>
       </tr>
       <tr>
         <td>Opening a roundtable from the Roundtable page (only when you press 「開一場圓桌」)</td>
@@ -287,7 +287,7 @@
   <h3 id="en-6">6. Credentials</h3>
   <p>Credentials are held in a local vault encrypted with Windows DPAPI and tied to your Windows user account. The vault supports three profile layers — system, user and project — and credential rotation. Plaintext secrets are never written to logs, never rendered in the user interface and never placed on a command line.</p>
   <p>Every use of a credential goes through one gatekeeper. A credential you switched off or revoked is not used, and the same value is refused even if it is stored again under another name or layer, or set in an environment variable. A project can be bound so that it never falls back to your user-level or system-level key. If the vault exists but cannot be opened, no credential is used at all, not even one from an environment variable. API keys found in environment variables are taken over by the application when it starts and removed from its environment, so programs started by <code>command</code> steps do not inherit them. The values of credentials the application has used are masked before text is written to a log, an error record or a report, and before text is sent to a model. A <code>browser</code> step's screenshot is not saved if the text visible on the page at that moment shows a password the step typed, a sign-in token, or a credential the application has used; the step fails instead. Text drawn inside pictures cannot be checked this way.</p>
-  <p>You may choose to store credentials for third-party services. The kinds of credential the vault can hold include API keys for DeepSeek, Anthropic, OpenAI, Google Gemini, xAI (Grok), Moonshot (Kimi), Meta/Llama, DashScope/Qwen and Z.ai/GLM services, a token for GitHub Copilot (either the tokens GitHub issues when you sign in with your GitHub account, or a fine-grained token you paste), notification webhook URLs of the kind used by Telegram or Slack, and a GitHub token for posting handoff packages. A webhook URL is itself a secret and is stored as one. That handoff token is used only by a command-line tool that exists when the application is run from source, which posts a redacted handoff package to a GitHub issue or pull request you name; the Microsoft Store and installer builds do not use it.</p>
+  <p>You may choose to store credentials for third-party services. The kinds of credential the vault can hold include API keys for DeepSeek, Anthropic, OpenAI, Google Gemini, xAI (Grok), Moonshot (Kimi), Mistral, Meta/Llama, DashScope/Qwen and Z.ai/GLM services, a Groq API key used only for push-to-talk, a token for GitHub Copilot (either the tokens GitHub issues when you sign in with your GitHub account, or a fine-grained token you paste), notification webhook URLs of the kind used by Telegram or Slack, and a GitHub token for posting handoff packages. A webhook URL is itself a secret and is stored as one. That handoff token is used only by a command-line tool that exists when the application is run from source, which posts a redacted handoff package to a GitHub issue or pull request you name; the Microsoft Store and installer builds do not use it.</p>
   <div class="callout warn">
     <p>None of these services is enabled by default, and ai-team-os is not affiliated with, endorsed by, or an official client of any of them. Storing a credential does not by itself transmit anything: a credential is used only when a step you wrote calls the service it belongs to.</p>
   </div>
@@ -408,7 +408,7 @@
     <li><code>team-os.json</code> —— 你另外建的每個工作區可以用哪些功能模組、收哪幾層發行者的套件（只記代號）；</li>
     <li><code>home.json</code> —— 資料夾格式的版本，以及上一次打開它的電腦名稱和 Windows 使用者名稱；</li>
     <li><code>model-prices.json</code> —— 你在設定裡填的模型價目（每一顆模型的價錢、來源與查核日期；只有價錢，不含任務內容）；</li>
-    <li><code>ui.json</code> —— 畫面外觀：主題、字級、側邊欄、自訂顏色、背景圖的設定、開始頁的排列，以及念出來的設定和按住說話開了沒（只有選項值）；</li>
+    <li><code>ui.json</code> —— 畫面外觀：主題、字級、側邊欄、自訂顏色、背景圖的設定、開始頁的排列，以及念出來的設定、按住說話開了沒和轉文字用哪一家（只有選項值）；</li>
     <li><code>ui-bg</code> —— 你選的背景圖（有選才有）：程式先把它縮小（長邊最多 2,560 像素）、重新存成 WebP 再存下來，照片裡的拍攝資訊（相機、拍攝地點等）會一起拿掉。這張圖只用來畫畫面，不會送到任何地方；</li>
     <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
   </ul>
@@ -475,8 +475,8 @@
       </tr>
       <tr>
         <td>按住說話（「按住說話」，預設關閉；打開時桌面程式會先跳自己的確認視窗）</td>
-        <td>按住按鈕那段時間的錄音（最多約 60 秒、2 MB）、模型名稱、語言代碼 <code>zh</code>，以及一句固定的說明（「以下是台灣的繁體中文。」，請它用繁體中文回）。只有按住的時候才會用麥克風，Windows 自己的麥克風權限也照樣有效。錄音不存檔。轉回來的字遮過之後放進輸入框，你按了送出才會送。</td>
-        <td>OpenAI 的轉文字服務（<code>api.openai.com/v1/audio/transcriptions</code>），用你存在 Vault 的 OpenAI 金鑰，算在你自己的 OpenAI 帳單；對方回轉址的話不跟，30 秒沒回就取消。</td>
+        <td>按住按鈕那段時間的錄音（最多約 60 秒、2 MB）、模型名稱，以及請它用繁體中文回的固定說明（OpenAI、Groq：語言代碼 <code>zh</code> 和「以下是台灣的繁體中文。」；Google Gemini：一句請它用台灣的繁體中文逐字轉寫的短說明）。只有按住的時候才會用麥克風，Windows 自己的麥克風權限也照樣有效。錄音不存檔。轉回來的字遮過之後放進輸入框，你按了送出才會送。</td>
+        <td>你在設定 →「角色與聲音」→「轉文字用」選的那一家（一次一家）：OpenAI 的轉文字服務（<code>api.openai.com/v1/audio/transcriptions</code>）、Google Gemini（<code>generativelanguage.googleapis.com</code>，模型 gemini-3.1-flash-lite；用 Google 的免費額度時，Google 的條款寫明會拿內容改進它的產品、可能有人工審閱，付費的不會），或 Groq 的轉文字服務（<code>api.groq.com/openai/v1/audio/transcriptions</code>）。用你存在 Vault 的那一家金鑰，算在你自己那一家的帳單。位址寫死，環境變數改不了。按住說話開著時換一家，會再問你一次。對方回轉址的話不跟，30 秒沒回就取消。</td>
       </tr>
       <tr>
         <td>從圓桌頁開一場圓桌（你按了「開一場圓桌」才開）</td>
@@ -527,7 +527,7 @@
   <h3 id="zh-6">六、憑證</h3>
   <p>憑證放在本機的 Vault，用 Windows DPAPI 加密，綁定你的 Windows 使用者帳戶。Vault 支援 system、user、project 三層 profile，也支援輪換。明文祕密不會寫進 log、不會顯示在畫面上、不會出現在命令列。</p>
   <p>每一次用憑證都經過同一個關卡。你停用或撤銷的憑證不會被拿來用；同一個值就算換個名字、換一層存，或是設在環境變數裡，也一樣會被擋下。專案可以綁定成「不退回」：專案自己的那一把不能用時，不會改用你使用者層或系統層的金鑰。Vault 在、卻打不開的時候，一把憑證都不用，連環境變數裡的也不用。環境變數裡的 API 金鑰，程式一啟動就收進來、從它自己的環境拿掉，所以 <code>command</code> 步驟啟動的程式拿不到。寫進 log、錯誤紀錄或回報之前，以及送給模型之前，本程式用過的憑證值都會先遮掉。<code>browser</code> 步驟要截圖時，如果當下頁面上看得到的文字裡有這一步填的密碼、登入 token 或本程式用過的憑證，這張圖就不存，那一步算失敗；畫在圖片裡的字沒辦法這樣檢查。</p>
-  <p>你可以自行選擇要不要存第三方服務的憑證。Vault 能存的憑證種類包含 DeepSeek、Anthropic、OpenAI、Google Gemini、xAI（Grok）、Moonshot（Kimi）、Meta/Llama、DashScope/Qwen、Z.ai/GLM 等服務的 API 金鑰、GitHub Copilot 的權杖（用 GitHub 帳號登入時 GitHub 給的那兩把，或你貼的細部權杖）、Telegram、Slack 這一類的通知 webhook 網址，以及貼交接包用的 GitHub token。webhook 網址本身就是祕密，所以也當祕密存。貼交接包用的 GitHub token 只有從原始碼執行時才有的一個命令列工具會用到：它把遮蔽過的交接包貼到你指定的 GitHub issue 或 pull request。Microsoft Store 與安裝檔版本不會用到它。</p>
+  <p>你可以自行選擇要不要存第三方服務的憑證。Vault 能存的憑證種類包含 DeepSeek、Anthropic、OpenAI、Google Gemini、xAI（Grok）、Moonshot（Kimi）、Mistral、Meta/Llama、DashScope/Qwen、Z.ai/GLM 等服務的 API 金鑰、只給按住說話用的 Groq API 金鑰、GitHub Copilot 的權杖（用 GitHub 帳號登入時 GitHub 給的那兩把，或你貼的細部權杖）、Telegram、Slack 這一類的通知 webhook 網址，以及貼交接包用的 GitHub token。webhook 網址本身就是祕密，所以也當祕密存。貼交接包用的 GitHub token 只有從原始碼執行時才有的一個命令列工具會用到：它把遮蔽過的交接包貼到你指定的 GitHub issue 或 pull request。Microsoft Store 與安裝檔版本不會用到它。</p>
   <div class="callout warn">
     <p>上面這些服務沒有一個是預設啟用的。ai-team-os 與其中任何一家都沒有隸屬、合作或官方授權關係，也不是任何一家的官方用戶端。存了憑證不等於送出任何東西：憑證只有在你寫的步驟去呼叫它所屬的服務時才會被用到。</p>
   </div>
@@ -589,7 +589,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-22 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-23 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
