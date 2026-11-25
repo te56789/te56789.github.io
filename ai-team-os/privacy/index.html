@@ -99,7 +99,7 @@
     <span class="zh">ai-team-os 隱私權政策</span>
   </h1>
   <div class="meta">
-    <b>Last updated / 最後更新日期：</b>2026-11-23<br>
+    <b>Last updated / 最後更新日期：</b>2026-11-25<br>
     <b>Publisher / 發行者：</b>te56789<br>
     <b>Applies to / 適用範圍：</b>ai-team-os, Windows desktop application (Microsoft Store and public release builds)
   </div>
@@ -115,7 +115,7 @@
   <h2>English</h2>
 
   <div class="callout ok">
-    <p><b>In one paragraph.</b> ai-team-os runs entirely on your own Windows PC. There is no account, no sign-in, no developer-operated server and no telemetry — the developer receives no data from the application at all. Data leaves your computer only in ways you set up yourself: a task step you wrote, a chat you send to a cloud model, notifications you switched on, an update check against an address you entered, or a background image you download from a web address you pasted. Each one goes only to the destination you chose. Everything else stays in one local folder that you can delete at any time.</p>
+    <p><b>In one paragraph.</b> ai-team-os runs entirely on your own Windows PC. There is no account, no sign-in, no developer-operated server and no telemetry — the developer receives no data from the application at all. Data leaves your computer only in ways you set up or start yourself, each listed in section 5: for example a task step you wrote, a chat you send to a cloud model, notifications you switched on, an update check against an address you entered, the official package catalog when you press 「抓目錄」 (Fetch catalog), or a background image you download from a web address you pasted. Each one goes only to the destination you chose; the package catalog always goes to the project's public releases repository on GitHub. Everything else stays in one local folder that you can delete at any time; the only things kept next to it are the backups made when you clear a module's data or roll it back (section 4).</p>
   </div>
 
   <ol class="toc">
@@ -148,18 +148,22 @@
   <p>The application also does not turn on crash dumps or memory snapshots of its own. While it holds a secret it switches off Node.js diagnostic reports, and the health check warns you if Windows is set to save full memory dumps of the application.</p>
 
   <h3 id="en-4">4. What is stored on your device</h3>
-  <p>All application data lives in one local data folder. By default that folder is <code>%APPDATA%\ai-team-os</code> for the installer build, and <code>%USERPROFILE%\.ai-team-os</code> for the Microsoft Store (MSIX) build — the Store build deliberately keeps its data outside <code>%APPDATA%</code> so that uninstalling the app never deletes it. You can move it by setting the <code>TEAMOS_HOME</code> environment variable. The folder contains:</p>
+  <p>All application data lives in one local data folder (the only exception is the backups described after the list below, which are placed next to it). By default that folder is <code>%APPDATA%\ai-team-os</code> for the installer build, and <code>%USERPROFILE%\.ai-team-os</code> for the Microsoft Store (MSIX) build — the Store build deliberately keeps its data outside <code>%APPDATA%</code> so that uninstalling the app never deletes it. You can move it by setting the <code>TEAMOS_HOME</code> environment variable. The folder contains:</p>
   <ul>
     <li><code>vault\</code> — stored credentials (API keys, the notification webhook address, GitHub tokens), each value encrypted with Windows DPAPI under your Windows user account. Next to them, <code>vault\vault.db</code> keeps, unencrypted, each credential's name, version and state (in use, switched off or revoked), project bindings, and a record of every use and every change: which credential, from which layer and version or environment variable, for which project and run. A value that was switched off, revoked or reported as leaked is remembered only as a keyed hash, never as the value, so that the same value is refused wherever it is stored again; the key for those hashes is itself encrypted with DPAPI;</li>
     <li><code>runs\runs.db</code> — run records, step events, the cost ledger, task-specification versions, notices and the list of artifacts; also one line per model call (task steps, chat, roundtable, planning drafts and conversation summaries) with the project, the model, token counts and the estimated cost, but not what was sent; and the monthly budget and calls-per-minute limit set for each project;</li>
     <li><code>registry.db</code> — the workspaces and projects you have registered;</li>
-    <li><code>packages\packages.db</code> — the packages you installed from a file: which ones, which version, who signed them, whether they are switched off, the permissions they need, and a log of every install, update, rollback and uninstall;</li>
+    <li><code>packages\packages.db</code> — the packages you installed, from a file or from the package catalog: which ones, which version, who signed them, whether they are switched off, the permissions they need, and a log of every install, update, rollback and uninstall, including install attempts that were refused or failed; also a record of each time a feature module's data was cleared or could not be cleared (which items were deleted, how large they were and where the backup was put);</li>
     <li><code>packages\store\</code> — the original <code>.atm</code> file of each installed package version, kept unchanged and named after its SHA-256 hash;</li>
+    <li><code>trust\catalog.json</code> — the package catalog as last fetched with 「抓目錄」, exactly as received: a list, signed by the developer, of the official packages (for each one its name, description, version, publisher, the permissions it needs, and its size, hash and download address). Its signature is checked again every time it is used. It contains nothing about you;</li>
+    <li><code>trust\revocations.json</code> — the revocation list that can arrive with the update check, exactly as received and signed by the developer: which publishers, keys and packages may no longer be used. It is used together with the list built into the application, and contains nothing about you;</li>
     <li><code>memory.db</code> — cross-task memory: what the platform remembers and where each item came from. It can contain text read back from websites you automate, such as error messages and excerpts of results;</li>
     <li><code>modules\feature.chat\data.db</code> — your conversations with AI models: what you typed, the replies, the text of attached files, the images you attached (stored as they are and deleted together with the conversation), and which model each message used and what it cost. Anything you paste into a conversation is kept here;</li>
     <li><code>modules\feature.roundtable\data.db</code> — roundtable decision records;</li>
     <li><code>modules\feature.automation\data.db</code> — the unattended-mode ledger and the notifications it sent, including the ones that failed;</li>
     <li><code>modules\feature.tasks\blobs\</code> — the content of files produced by task steps. A file whose content contains a secret used by that run is not stored; only a keyed hash of it is recorded. Content saved by earlier versions can still be in <code>artifacts\</code> until the Tasks feature moves it (it stays there while Tasks is switched off);</li>
+    <li><code>modules\feature.chat\upgrade\</code>, <code>modules\feature.roundtable\upgrade\</code>, <code>modules\feature.automation\upgrade\</code> and <code>modules\feature.memory\upgrade\</code> — when an application update changes how one of these features stores its data, the application first copies that feature's database here, then upgrades it. Once the upgrade has passed its checks, the copy is kept as 「更新前的資料」 (previous data) for 7 days, so that you can go back to it if you reinstall the earlier version, and is then deleted automatically. The copy can contain things you deleted after the update: deleting a conversation also deletes the chat feature's copy, and forgetting a memory item deletes the memory feature's copy. A short record of the last upgrade is kept next to it. If an upgrade fails and the application cannot confirm that it was rolled back, the copy is kept under a name beginning with <code>rescue-</code> until you delete or move it, and the application tells you where it is;</li>
+    <li><code>.purge-trash\</code> — while a feature module's data is being cleared, the items are moved here first and then deleted together, and the folder is removed. If you can see it, the last clearing did not finish; it holds that module's cleared data, which you can delete yourself;</li>
     <li><code>browser-profiles\</code> — browser sign-in state used by <code>browser</code> steps, encrypted with Windows DPAPI;</li>
     <li><code>copilot\</code> — if you use GitHub Copilot: temporary files of GitHub's Copilot runtime, one subfolder per running copy of the application, holding that runtime's transcript of each conversation, which is deleted when the reply finishes and when the application closes (anything left by a crash is removed the next time Copilot is used); and, if you signed in with your GitHub account, <code>login.json</code> — the sign-in method, when the access token expires and a fingerprint of that token (not the token itself; the tokens are in <code>vault\</code>). This folder is not included in backups;</li>
     <li><code>recorded\</code> — task drafts recorded in the browser, in plain text. They can contain values you typed into form fields; password fields are never recorded;</li>
@@ -172,6 +176,7 @@
     <li><code>ui-bg</code> — the background image you chose, if you chose one: a copy that the application shrinks (longest side at most 2,560 pixels) and re-encodes as WebP, which drops the photo's embedded details such as camera and location data. It is used only to draw the screen and is never sent anywhere;</li>
     <li><code>reports\</code> — the reports you create with “Report inappropriate AI output”, one JSON file each. They stay on your device until you choose to send one.</li>
   </ul>
+  <p>Two kinds of backup are placed next to the data folder, in the folder that contains it, rather than inside it. One is made after your first confirmation of 「清除資料…」 (Clear data), before a feature module's data is deleted, and is named like <code>ai-team-os-purge-feature.chat-20261126-093000</code>. The other is made after your first confirmation of 「回到更新前的資料…」 (Go back to previous data), before a module's current data is replaced with its previous data, and is named like <code>ai-team-os-restore-feature.chat-20261126-093000</code>. Each holds a copy of that module's data as it was (what was encrypted stays encrypted; the rest is not encrypted) and a <code>RESTORE.txt</code> that explains how to put it back. The application never deletes these backups, even if you cancel the second confirmation; they stay until you delete them.</p>
   <p>The application never uploads this folder. Pieces of it travel only along the routes listed in section 5: for example, the earlier messages of a conversation go with your next chat message, and when memory is switched on, the remembered items that seat may read go with an <code>agent</code> step's prompt.</p>
 
   <h3 id="en-5">5. What can leave your device, and only when you ask for it</h3>
@@ -251,7 +256,12 @@
       <tr>
         <td>Update check (off by default)</td>
         <td>A request for the update description file, made when you press the check button. It carries nothing about you or your tasks.</td>
-        <td>The update source address you entered in settings. Redirects are followed (a GitHub download address, for example, forwards to GitHub's own file host); the request still carries nothing about you. While that field is empty, which is the default, the application never checks. The Microsoft Store build is updated by the Store.</td>
+        <td>The update source address you entered in settings. Redirects are followed (a GitHub download address, for example, forwards to GitHub's own file host); the request still carries nothing about you. While that field is empty, which is the default, the application never checks. The Microsoft Store build is updated by the Store. The reply can also carry a revocation list signed by the developer (publishers, keys and packages that may no longer be used); it comes in the same reply, without another request, and is stored as <code>trust\revocations.json</code> (see section 4). The Store build, which does not check, uses only the list built into the application.</td>
+      </tr>
+      <tr>
+        <td>Package catalog (only when you press 「抓目錄」 or 「看安裝規劃」)</td>
+        <td>When you press 「抓目錄」 (Fetch catalog): a request for the catalog, a list of official packages signed by the developer. When you press 「看安裝規劃」 (View install plan), or 「看更新規劃」 (View update plan), on one package: a request to download that one package file. Neither request carries anything about you or your tasks. The catalog is saved in your data folder only if its signature checks out (see section 4). The package file is used only if its size and SHA-256 hash match the catalog; it is kept in memory, not on disk, and is installed only after you press OK in the desktop app's confirmation window (once installed, its original file is stored in <code>packages\store\</code> like any other package).</td>
+        <td>The official catalog, in the <code>catalog</code> release of the project's public releases repository on GitHub (<code>github.com/te56789/ai-team-os-releases</code>); the address is built into the application and no setting changes it. The package file comes from the address written in that signed catalog (the official catalog's package files are in the same release). Redirects are followed one step at a time, at most 5, and only to <code>https</code> addresses (GitHub's download addresses forward to GitHub's own file host). Fetching the catalog stops after 15 seconds or 2 MB, and a package download after 60 seconds or the size written in the catalog. Until you press one of these buttons, the application never connects; the Microsoft Store build works the same way.</td>
       </tr>
       <tr>
         <td>Your git configuration (hooks, filters, Git LFS)</td>
@@ -296,12 +306,13 @@
   <p>When a step you wrote sends data to a third-party service, that service's own terms and privacy policy govern what happens to the data. Review them before configuring a service. The developer of ai-team-os has no visibility into and no control over that processing.</p>
 
   <h3 id="en-8">8. Files</h3>
-  <p>The application reads and writes files inside the projects you register and inside its own data folder. A <code>write_file</code> step writes where the specification says to write. A <code>git_commit</code> step commits in the git worktree assigned to that seat. Files are read only when a step you wrote refers to them. The application never uploads the contents of your drive.</p>
+  <p>The application reads and writes files inside the projects you register and inside its own data folder. A <code>write_file</code> step writes where the specification says to write. A <code>git_commit</code> step commits in the git worktree assigned to that seat. Files are read only when a step you wrote refers to them. A <code>plugin</code> step (a package's plug-in tool, see section 9) can save the tool's output as a file in that seat's folder, under the same file-writing check as other steps; the tool itself cannot read or write any file outside its own package. The application never uploads the contents of your drive.</p>
 
   <h3 id="en-9">9. Local commands</h3>
-  <p>A <code>command</code> step runs a command line that you wrote into the task specification, on your machine, under your Windows account. The application does not download programs and run them, and does not fetch code from the internet to execute. High-risk actions stop and wait for your approval before running, in a confirmation window of the desktop app that lists every parameter the step will actually use; an action beyond its granted permission level is refused and produces no side effect.</p>
+  <p>A <code>command</code> step runs a command line that you wrote into the task specification, on your machine, under your Windows account. The application does not download programs and run them, and does not fetch code from the internet to execute. The one exception is a package's plug-in tool, which you install yourself after a confirmation and which runs only inside the sandbox described under <b>Packages</b> below, with no access to your files, the network or other programs. High-risk actions stop and wait for your approval before running, in a confirmation window of the desktop app that lists every parameter the step will actually use; an action beyond its granted permission level is refused and produces no side effect.</p>
   <p>A <code>command</code> step can start only programs on the built-in allow-list, and running a script, or any interpreter command that could execute code, needs your approval. If the program itself uses the network, as <code>git fetch</code> or <code>npm install</code> do, it contacts the address it is set up for; the application adds no data of its own.</p>
-  <p><b>Packages.</b> Under Settings → 「功能模組」 (Feature modules) → 「套件」 (Packages) you can install a package (an <code>.atm</code> file) that you pick from your own drive. A package holds task templates only: data, not programs, so installing one runs nothing. A template only fills in a task specification; its steps run when you start that task, under the same approvals as any other. The application does not download packages and has no package store or marketplace; installing, updating, rolling back or uninstalling a package sends nothing anywhere. Before installing, it shows you the permissions the templates would use. Every time a package is read, its signature is checked again against the list of trusted publisher keys built into the application. A package that is unsigned, or signed with a key not on that list, installs only if you switch on developer mode in settings, which is off by default.</p>
+  <p><b>Packages.</b> Under Settings → 「功能模組」 (Feature modules), after turning on 「顯示進階選項」 (Show advanced options), the 「套件」 (Packages) section lets you install a package (an <code>.atm</code> file) that you pick from your own drive, and the 「套件目錄（Beta）」 (Package catalog) section lists official packages you can install. A package can hold task templates, themes and plug-in tools. Templates and themes are data, not programs: a template only fills in a task specification, and its steps run when you start that task, under the same approvals as any other; a theme is only a set of appearance settings, with no program, web address or style sheet. A plug-in tool is a small WebAssembly program. It runs only when a <code>plugin</code> step in a task calls it, each time in a new sandbox that gives it only a limited amount of memory, a way to write log lines and read access to the files in its own package: it cannot read or write your files, connect to the network, start programs, read environment variables or use your keys, and it is stopped after at most 30 seconds. Installing, updating, rolling back or uninstalling a package runs nothing, and apart from the catalog download described below, sends nothing anywhere. Before installing, the application shows you the package's trust level and the permissions it would use. Every time a package is read, its signature is checked again against the list of trusted publisher keys built into the application and against the revocation list (the one built in, plus the signed list that can come with the update check, see section 5); a package from a revoked publisher or key is neither installed nor loaded. A package that is unsigned, or signed with a key not on that list, installs only if you switch on developer mode in settings, which is off by default.</p>
+  <p>The package catalog connects to the internet only when you press 「抓目錄」 (Fetch catalog), which reads one list signed by the developer, or 「看安裝規劃」 (View install plan) on one of its packages, which downloads that one package file (see section 5). A downloaded package must match the size and SHA-256 hash in the signed list, and its own id, version and publisher must match the list's entry; it then goes through the same checks as a package from your drive, and nothing is installed until you press OK in the desktop app's confirmation window.</p>
 
   <h3 id="en-10">10. Live generative AI</h3>
   <p>An <code>agent</code> step or a chat produces text generated by a model in response to your prompt. Generated output is not reviewed by the developer before you see it, and it can be inaccurate, offensive or otherwise unsuitable. Do not rely on generated output without checking it.</p>
@@ -313,9 +324,9 @@
   <p>The developer receives no user data, and therefore shares none and sells none. Data goes only to the destinations you chose, as listed in section 5.</p>
 
   <h3 id="en-12">12. Retention and deletion</h3>
-  <p>Everything is kept locally, and kept until you delete it. Deleting the data folder removes all application data, including the vault, run history, cost ledger and artifacts. Uninstalling the application deliberately leaves the data folder in place: removing the program and discarding your data are two separate steps. Backups are never made automatically; a backup exists only if you create one, in the folder you choose. In this version backups are created and restored with the command-line tool that comes with the source code; the installed builds can only check an existing backup, under Settings → 「備份與資料」 (Backup and data). There is no server-side copy for you to request the deletion of.</p>
-  <p>To delete individual things from inside the application: under Settings → 「備份與資料」, 「清產物內容（先試算）」 shows which artifact content no run refers to any more, and 「真的清」 deletes it after a confirmation; under Settings → 「外觀與主題」, 「拿掉你的圖」 deletes the background image.</p>
-  <p>Uninstalling a package deletes its versions and its original files. The log of what was installed and removed stays in <code>packages\packages.db</code> until you delete the data folder.</p>
+  <p>Everything is kept locally, and kept until you delete it. Deleting the data folder removes all application data, including the vault, run history, cost ledger and artifacts; the backups placed next to it (section 4) are separate folders that you delete on their own. Uninstalling the application deliberately leaves the data folder in place: removing the program and discarding your data are two separate steps. A backup of the whole data folder is never made automatically; one exists only if you create it, in the folder you choose. In this version such backups are created and restored with the command-line tool that comes with the source code; the installed builds can only check an existing backup, under Settings → 「備份與資料」 (Backup and data). The application makes copies of its own in only two situations, both described in section 4: when an application update changes how a feature stores its data (a copy inside the data folder, kept for 7 days after the upgrade succeeds, then deleted), and when you clear a module's data or go back to its previous data (a backup next to the data folder, kept until you delete it). There is no server-side copy for you to request the deletion of.</p>
+  <p>To delete individual things from inside the application: under Settings → 「備份與資料」, in the 「危險區」 (danger zone), 「試算」 (Dry run) shows which artifact content no run refers to any more, and 「清掉」 (Clear) deletes it after a confirmation; under Settings → 「外觀與主題」, 「拿掉你的圖」 deletes the background image. Under Settings → 「功能模組」, after turning on 「顯示進階選項」, the list of modules offers two more. 「清除資料…」 (Clear data), on a feature module that is switched off, lists what would be deleted and how large it is; after the first confirmation it makes the backup described in section 4, and it deletes only after a second confirmation. Some modules cannot be cleared this way yet, for example Tasks, whose records share a database with the rest of the application; the application says why. 「刪掉」 (Delete) removes a module's previous data, the copy kept after an update, after a confirmation, without waiting for the 7 days to pass.</p>
+  <p>Built-in feature modules cannot be uninstalled separately, because their program is part of the application; switching one off is the equivalent. Its data stays in the data folder (the module's row shows 「資料還在」, data retained, and its size), and switching it back on brings the data back. Uninstalling a package deletes its versions and its original files; a look you applied from a theme package stays, because it is stored in <code>ui.json</code>. The log of what was installed and removed, and the record of each clearing of a module's data, stay in <code>packages\packages.db</code> until you delete the data folder.</p>
 
   <h3 id="en-13">13. Your controls</h3>
   <ul>
@@ -329,7 +340,8 @@
     <li>Notifications and the update check are off by default; turn them on only if you want them.</li>
     <li>Switch off features you do not use under Settings → 「功能模組」 (Feature modules).</li>
     <li>Limit which feature modules and which package publishers each additional workspace may use, under Settings → 「工作區與專案」 (Workspaces and projects).</li>
-    <li>Install only the package files you chose, and switch off or uninstall any of them at any time under Settings → 「功能模組」 → 「套件」.</li>
+    <li>Install only the packages you chose, from your own drive or from the package catalog, and switch off or uninstall any of them at any time under Settings → 「功能模組」 → 「顯示進階選項」 → 「套件」. The catalog connects only when you press 「抓目錄」 or 「看安裝規劃」.</li>
+    <li>Clear the data of a feature module you switched off with 「清除資料…」, or delete the copy kept from before an update with 「刪掉」, in the module list under Settings → 「功能模組」 → 「顯示進階選項」.</li>
     <li>Use your own background image only if you want one: downloading one from an address asks for confirmation every time, and 「拿掉你的圖」 deletes the saved copy.</li>
     <li>Open Settings → <b>「隱私與回報」</b> (Privacy and reporting) at any time to see, for the build you are running, where its data is kept on this machine, which of it is encrypted, and which step kinds can send data off it.</li>
     <li>Report AI output you consider inappropriate, and read the exact payload before it is written.</li>
@@ -355,7 +367,7 @@
   <h2>繁體中文</h2>
 
   <div class="callout ok">
-    <p><b>一段話講完。</b>ai-team-os 完全跑在你自己的 Windows 電腦上。沒有帳號、沒有登入、沒有開發者架設的伺服器，也沒有任何遙測 —— 開發者收不到這支程式的任何資料。資料只會從你自己設定好的地方離開這台電腦：你寫的任務步驟、你傳給雲端模型的對話、你打開的通知、填了網址之後按下的「檢查更新」，或是你貼上網址要下載的背景圖。每一種都只送到你選的目的地。其餘全部留在一個本機資料夾，你隨時可以刪掉。</p>
+    <p><b>一段話講完。</b>ai-team-os 完全跑在你自己的 Windows 電腦上。沒有帳號、沒有登入、沒有開發者架設的伺服器，也沒有任何遙測 —— 開發者收不到這支程式的任何資料。資料只會在你自己設定好、或自己按下去的時候離開這台電腦，第五節一條一條列出來，例如：你寫的任務步驟、你傳給雲端模型的對話、你打開的通知、填了網址之後按下的「檢查更新」、按「抓目錄」看官方的套件目錄，或是你貼上網址要下載的背景圖。每一種都只送到你選的目的地；套件目錄則固定連到本專案在 GitHub 的公開釋出倉庫。其餘全部留在一個本機資料夾，你隨時可以刪掉；唯一放在資料夾旁邊的，是你清除或退回某個模組的資料時先做的備份（見第四節）。</p>
   </div>
 
   <ol class="toc">
@@ -388,18 +400,22 @@
   <p>本程式也不會自己開啟當機傾印或記憶體快照。手上拿著祕密的時候，它會關掉 Node.js 的診斷報告；如果 Windows 被設定成會把本程式的整份記憶體存成傾印檔，體檢會提醒你。</p>
 
   <h3 id="zh-4">四、存在你電腦裡的東西</h3>
-  <p>本程式的資料全部放在同一個本機資料夾。安裝檔版本的預設位置是 <code>%APPDATA%\ai-team-os</code>；Microsoft Store（MSIX）版本則是 <code>%USERPROFILE%\.ai-team-os</code> —— 商店版刻意把資料放在 <code>%APPDATA%</code> 之外，這樣解除安裝就不會把它一起刪掉。你可以設定 <code>TEAMOS_HOME</code> 環境變數把它搬到別的地方。這個資料夾裡有：</p>
+  <p>本程式的資料全部放在同一個本機資料夾（唯一的例外是清單後面講的備份，放在資料夾旁邊）。安裝檔版本的預設位置是 <code>%APPDATA%\ai-team-os</code>；Microsoft Store（MSIX）版本則是 <code>%USERPROFILE%\.ai-team-os</code> —— 商店版刻意把資料放在 <code>%APPDATA%</code> 之外，這樣解除安裝就不會把它一起刪掉。你可以設定 <code>TEAMOS_HOME</code> 環境變數把它搬到別的地方。這個資料夾裡有：</p>
   <ul>
     <li><code>vault\</code> —— 已儲存的憑證（API 金鑰、通知用的 webhook 網址、GitHub 的權杖），每一個值都用 Windows DPAPI 綁你的 Windows 使用者帳戶加密。旁邊的 <code>vault\vault.db</code> 沒有加密，記著每一把憑證的名字、版本與狀態（使用中、停用、已撤銷）、專案綁定，以及每一次使用、每一次變更的紀錄：哪一把、從哪一層哪一版或哪個環境變數拿的、給哪個專案的哪一趟執行。被停用、撤銷或標成外洩的值，只記一個加了鑰匙的雜湊，不記值本身，同一個值換個地方再放進來也會被擋下；算雜湊的那把鑰匙本身也用 DPAPI 加密；</li>
     <li><code>runs\runs.db</code> —— 執行紀錄、步驟事件、費用帳本、任務規格的版本、通知，以及產物清單；另外每叫一次模型就記一筆（任務步驟、對話、圓桌、計畫草稿、對話摘要都算）：哪個專案、哪顆模型、token 數、估算的費用，不記送了什麼內容；還有每個專案設的本月預算與每分鐘次數上限；</li>
     <li><code>registry.db</code> —— 你登記過的工作區與專案；</li>
-    <li><code>packages\packages.db</code> —— 你從檔案裝的套件：裝了哪些、哪一版、誰簽的、有沒有停用、需要哪些權限，以及每一次安裝、更新、回到上一版、解除安裝的紀錄；</li>
+    <li><code>packages\packages.db</code> —— 你裝的套件（從檔案裝的、從套件目錄裝的都算）：裝了哪些、哪一版、誰簽的、有沒有停用、需要哪些權限，以及每一次安裝、更新、回到上一版、解除安裝的紀錄，被擋下或沒裝成的也記；另外還記每一次清除功能模組資料的結果（刪了哪幾項、多大、備份放在哪，沒清成的也記）；</li>
     <li><code>packages\store\</code> —— 每個裝好的套件版本的 <code>.atm</code> 原檔，原封不動存著，檔名是它的 SHA-256 雜湊值；</li>
+    <li><code>trust\catalog.json</code> —— 上一次按「抓目錄」拿到的套件目錄，原樣存著：一份開發者簽過名的官方套件清單（每個套件的名字、說明、版本、發行者、需要的權限、大小、雜湊值和下載網址）。每次用都會重新驗一次簽章。裡面沒有任何關於你的資料；</li>
+    <li><code>trust\revocations.json</code> —— 「檢查更新」時可能跟著拿到的撤銷清單，原樣存著，開發者簽過名：哪些發行者、金鑰、套件不能再用。它跟程式內建的那一份合起來用，裡面沒有任何關於你的資料；</li>
     <li><code>memory.db</code> —— 跨任務的記憶：平台記住的事，以及每一條的來源。裡面可能有從你自動化的網站上讀回來的文字，例如錯誤訊息和產物片段；</li>
     <li><code>modules\feature.chat\data.db</code> —— 你跟 AI 模型的對話：你打的字、模型的回覆、附件的文字內容、附上的圖片（原樣存著，刪掉那段對話就一起刪掉），以及每一則用了哪個模型、花了多少錢。你貼進對話的任何東西都會存在這裡；</li>
     <li><code>modules\feature.roundtable\data.db</code> —— 圓桌的決策紀錄；</li>
     <li><code>modules\feature.automation\data.db</code> —— 無人值守的帳，以及它送過的通知（送不出去的也記）；</li>
     <li><code>modules\feature.tasks\blobs\</code> —— 任務步驟產生的檔案內容。內容裡有那一趟用到的祕密的檔案不會存，只記一個加了鑰匙的雜湊。舊版存的內容可能還在 <code>artifacts\</code>，要等 Tasks 功能把它搬過去（Tasks 停用的時候就一直留在那裡）；</li>
+    <li><code>modules\feature.chat\upgrade\</code>、<code>modules\feature.roundtable\upgrade\</code>、<code>modules\feature.automation\upgrade\</code> 與 <code>modules\feature.memory\upgrade\</code> —— App 更新後，如果這幾個功能存資料的方式變了，程式會先把那個功能的資料庫複製一份到這裡，再升級。升級過了、檢查也過了，這一份就留成「更新前的資料」7 天（裝回上一版 App 時可以換回去），之後自動刪掉。裡面可能有你在更新之後刪掉的東西：刪掉一段對話，對話的那一份會跟著刪；忘掉一條記憶，記憶的那一份也會跟著刪。旁邊另外記一筆上一次升級的紀錄。升級沒過、程式又沒辦法確認已經退回去時，那一份會改名成 <code>rescue-</code> 開頭留著，直到你自己刪掉或搬走，程式會告訴你它在哪裡；</li>
+    <li><code>.purge-trash\</code> —— 清除一個功能模組的資料時，要刪的東西先搬進這裡、再一起刪掉，刪完這個資料夾就收掉。看得到它的話，表示上一次清除沒做完，裡面就是那個模組被清除的資料，可以自己刪掉；</li>
     <li><code>browser-profiles\</code> —— <code>browser</code> 步驟用的瀏覽器登入狀態，同樣用 Windows DPAPI 加密；</li>
     <li><code>copilot\</code> —— 用 GitHub Copilot 的話：GitHub 的 Copilot 執行元件的暫存，一支程式一個子資料夾，裡面是它每一段對話的逐字稿 —— 回完就刪、關程式時刪（當掉留下的，下次用 Copilot 前清掉）；用 GitHub 帳號登入的話，多一個 <code>login.json</code>：登入的方法、權杖什麼時候到期、那一把權杖的指紋（不是權杖本身；權杖在 <code>vault\</code>）。這個資料夾不放進備份；</li>
     <li><code>recorded\</code> —— 在瀏覽器上錄出來的任務草稿，純文字。裡面可能有你在表單欄位打過的值；密碼欄位一律不記；</li>
@@ -412,6 +428,7 @@
     <li><code>ui-bg</code> —— 你選的背景圖（有選才有）：程式先把它縮小（長邊最多 2,560 像素）、重新存成 WebP 再存下來，照片裡的拍攝資訊（相機、拍攝地點等）會一起拿掉。這張圖只用來畫畫面，不會送到任何地方；</li>
     <li><code>reports\</code> —— 你用「回報不當的 AI 產出」建立的回報，一筆一個 JSON 檔。在你決定寄出之前，它們只待在你的電腦裡。</li>
   </ul>
+  <p>有兩種備份不放在資料夾裡面，而是放在它旁邊（跟資料夾同一層）。一種是按「清除資料…」、第一次確認之後，刪掉功能模組的資料之前做的，名稱像 <code>ai-team-os-purge-feature.chat-20261126-093000</code>；另一種是按「回到更新前的資料…」、第一次確認之後，用更新前的資料蓋掉現在的資料之前做的，名稱像 <code>ai-team-os-restore-feature.chat-20261126-093000</code>。每一份都是那個模組當時資料的副本（原本加密的照樣加密，其餘沒有加密），另外附一個 <code>RESTORE.txt</code> 說明怎麼放回去。就算第二次確認按了取消，這些備份也會留著；程式不會刪它們，要你自己刪。</p>
   <p>本程式不會把這個資料夾上傳到任何地方。裡面的資料只會沿著第五節列的路線送出，例如繼續一段對話時，前面的訊息會跟著新訊息一起送出；記憶打開時，這一席讀得到的記憶會跟著 <code>agent</code> 步驟的 prompt 一起送出。</p>
 
   <h3 id="zh-5">五、什麼會離開這台電腦，而且只在你叫它送的時候</h3>
@@ -491,7 +508,12 @@
       <tr>
         <td>檢查更新（預設關閉）</td>
         <td>你按下檢查按鈕時發出的一個請求，只讀取更新說明檔，不帶任何關於你或你的任務的資料。</td>
-        <td>你在設定裡填的更新來源網址。對方回轉址會跟過去（例如 GitHub 的下載網址會轉到 GitHub 自己的檔案主機），請求一樣不帶任何關於你的資料。這一格空著（預設就是空的）的時候，本程式從不檢查。Microsoft Store 版本由 Store 負責更新。</td>
+        <td>你在設定裡填的更新來源網址。對方回轉址會跟過去（例如 GitHub 的下載網址會轉到 GitHub 自己的檔案主機），請求一樣不帶任何關於你的資料。這一格空著（預設就是空的）的時候，本程式從不檢查。Microsoft Store 版本由 Store 負責更新。回應裡也可能附上一份開發者簽過名的撤銷清單（不能再用的發行者、金鑰和套件），跟著同一個回應回來，不會多連一次，存成 <code>trust\revocations.json</code>（見第四節）。Store 版不檢查更新，只用程式內建的那一份。</td>
+      </tr>
+      <tr>
+        <td>套件目錄（你按了「抓目錄」或「看安裝規劃」才連）</td>
+        <td>按「抓目錄」時：一個讀目錄的請求，目錄是一份開發者簽過名的官方套件清單。在某個套件那一張按「看安裝規劃」（裝過舊版的是「看更新規劃」）時：一個下載那一個套件檔的請求。兩種請求都不帶任何關於你或你的任務的資料。目錄驗過簽章才會存進資料夾（見第四節）。套件檔的大小和 SHA-256 雜湊要跟目錄寫的一樣才會拿來用；下載下來只放在記憶體、不存檔，要等你在桌面程式的確認視窗按了確定才會安裝（裝好之後原檔跟其他套件一樣存在 <code>packages\store\</code>）。</td>
+        <td>官方的目錄：本專案在 GitHub 的公開釋出倉庫（<code>github.com/te56789/ai-team-os-releases</code>）裡 <code>catalog</code> 那一個 release；網址寫在程式裡，設定改不了。套件檔從那份簽過名的目錄寫的網址下載（官方目錄的套件檔也放在同一個 release）。轉址會一跳一跳跟過去，最多 5 跳，每一跳都要是 <code>https</code>（GitHub 的下載網址會轉到 GitHub 自己的檔案主機）。抓目錄超過 15 秒或 2 MB、下載套件檔超過 60 秒或超過目錄寫的大小就停止。沒按這兩個按鈕，本程式從不連過去；Microsoft Store 版本也一樣。</td>
       </tr>
       <tr>
         <td>你的 git 設定（hook、filter、Git LFS）</td>
@@ -536,12 +558,13 @@
   <p>當你寫的步驟把資料送到第三方服務時，那筆資料之後怎麼處理，由該服務自己的條款與隱私權政策決定。設定前請先讀過。ai-team-os 的開發者看不到也管不到那一段處理。</p>
 
   <h3 id="zh-8">八、檔案</h3>
-  <p>本程式會在你登記的專案內，以及自己的資料夾內讀寫檔案。<code>write_file</code> 步驟寫在規格指定的位置；<code>git_commit</code> 步驟在那個席次被分配到的 git worktree 裡 commit。檔案只有在你寫的步驟指名它時才會被讀取。本程式不會上傳你硬碟裡的內容。</p>
+  <p>本程式會在你登記的專案內，以及自己的資料夾內讀寫檔案。<code>write_file</code> 步驟寫在規格指定的位置；<code>git_commit</code> 步驟在那個席次被分配到的 git worktree 裡 commit。檔案只有在你寫的步驟指名它時才會被讀取。<code>plugin</code> 步驟（套件裡的外掛工具，見第九節）可以把工具的輸出存成這一席資料夾裡的檔，存之前跟其他步驟一樣要過寫檔那一關；工具本身讀不到、也寫不了它自己套件以外的任何檔案。本程式不會上傳你硬碟裡的內容。</p>
 
   <h3 id="zh-9">九、本機命令</h3>
-  <p><code>command</code> 步驟執行的，是你自己寫進任務規格的那一行命令，在你的電腦上、用你的 Windows 帳戶執行。本程式不會下載程式回來執行，也不會從網路上抓程式碼來跑。高風險動作會先停下來，在桌面程式的確認視窗列出這一步真的會用的每一個參數，等你批准；超出授予權限等級的動作會被拒絕，而且不產生任何副作用。</p>
+  <p><code>command</code> 步驟執行的，是你自己寫進任務規格的那一行命令，在你的電腦上、用你的 Windows 帳戶執行。本程式不會下載程式回來執行，也不會從網路上抓程式碼來跑。唯一的例外是套件裡的外掛工具：要你自己確認才會安裝，而且只在下面「套件」那一段講的沙箱裡跑，碰不到你的檔案、網路或其他程式。高風險動作會先停下來，在桌面程式的確認視窗列出這一步真的會用的每一個參數，等你批准；超出授予權限等級的動作會被拒絕，而且不產生任何副作用。</p>
   <p><code>command</code> 步驟只能啟動內建允許清單上的程式；執行腳本，或任何可能跑程式碼的直譯器命令，都要你批准。如果那支程式自己會連網路，像 <code>git fetch</code> 或 <code>npm install</code>，它連的是它自己設定的位址，本程式不會另外加資料進去。</p>
-  <p><b>套件。</b>在設定 →「功能模組」的「套件」可以從你自己的硬碟挑一個套件檔（<code>.atm</code>）來安裝。套件裡只有任務範本，是資料不是程式，所以安裝時什麼都不會執行。範本只是幫你填好一份任務規格，裡面的步驟要等你開始那個任務才會跑，批准規則跟其他任務一樣。本程式不會從網路下載套件，也沒有套件商店；安裝、更新、回到上一版、解除安裝都不會送出任何東西。安裝前會先把範本會用到的權限列給你看。每次讀取套件，都會用程式內建的信任發行者金鑰清單重新驗一次簽章；沒有簽章、或簽章金鑰不在清單上的套件，要在設定裡打開開發者模式才裝得進去，開發者模式預設是關的。</p>
+  <p><b>套件。</b>在設定 →「功能模組」打開「顯示進階選項」之後，「套件」那一區可以從你自己的硬碟挑一個套件檔（<code>.atm</code>）來安裝，「套件目錄（Beta）」那一區列出可以安裝的官方套件。套件裡可以有任務範本、主題和外掛工具。任務範本和主題是資料不是程式：範本只是幫你填好一份任務規格，裡面的步驟要等你開始那個任務才會跑，批准規則跟其他任務一樣；主題只是一組外觀設定，不帶程式、網址或樣式表。外掛工具是一支小型的 WebAssembly 程式，只有任務裡的 <code>plugin</code> 步驟叫到它才會跑，而且每一次都在一個新的沙箱裡跑：沙箱只給它有上限的記憶體、寫紀錄的地方，以及讀它自己套件裡的檔；它讀不到也寫不了你的檔案、連不上網路、開不了其他程式、讀不到環境變數，也用不到你的金鑰，最多跑 30 秒就會被停掉。安裝、更新、回到上一版、解除安裝都不會執行任何東西；除了下面講的套件目錄下載，也不會送出任何東西。安裝前會先把套件的信任等級和會用到的權限列給你看。每次讀取套件，都會用程式內建的信任發行者金鑰清單和撤銷清單（程式內建的那一份，加上「檢查更新」時可能一起拿到的那一份簽過名的清單，見第五節）重新驗一次簽章；被撤銷的發行者或金鑰簽的套件，裝不進去也不會載入。沒有簽章、或簽章金鑰不在清單上的套件，要在設定裡打開開發者模式才裝得進去，開發者模式預設是關的。</p>
+  <p>套件目錄只有在你按「抓目錄」（讀一份開發者簽過名的清單），或在某個套件那一張按「看安裝規劃」（下載那一個套件檔）的時候才會連網，詳見第五節。下載下來的套件，大小和 SHA-256 雜湊要跟簽過名的清單一樣，套件自己寫的 id、版本和發行者也要跟清單上那一筆對得上；接著跟從硬碟挑的套件走同一套檢查，你在桌面程式的確認視窗按了確定才會安裝。</p>
 
   <h3 id="zh-10">十、即時生成式 AI</h3>
   <p><code>agent</code> 步驟和對話會依你的 prompt，由模型即時產生文字。你看到的生成內容沒有經過開發者事先審閱，可能不正確、可能冒犯人，也可能不適合你的用途。不要不檢查就直接採用。</p>
@@ -553,9 +576,9 @@
   <p>開發者收不到任何使用者資料，因此沒有東西可以分享，也沒有東西可以販售。資料只會去第五節列的、你自己選的目的地。</p>
 
   <h3 id="zh-12">十二、保存與刪除</h3>
-  <p>全部存在本機，而且會一直留著，直到你自己刪掉。刪掉資料夾就等於刪掉全部的程式資料，包含 Vault、執行紀錄、費用帳本與產物。解除安裝刻意不刪資料夾：「移除程式」跟「丟掉我的資料」是兩件事。程式不會自動備份，只有你自己建的備份才存在，而且放在你選的資料夾。這一版建備份、還原要用原始碼附的命令列工具；安裝版只能在設定 →「備份與資料」驗一份現成的備份。伺服器端沒有副本，所以也沒有「請開發者刪除」這件事。</p>
-  <p>在程式裡個別刪：設定 →「備份與資料」先按「清產物內容（先試算）」，看哪些產物內容已經沒有任何執行紀錄引用，再按「真的清」，確認後刪除；設定 →「外觀與主題」按「拿掉你的圖」，背景圖就刪掉。</p>
-  <p>解除安裝套件會刪掉它的各個版本和原檔。裝過、移除過哪些套件的紀錄會留在 <code>packages\packages.db</code>，直到你刪掉資料夾。</p>
+  <p>全部存在本機，而且會一直留著，直到你自己刪掉。刪掉資料夾就等於刪掉全部的程式資料，包含 Vault、執行紀錄、費用帳本與產物；放在資料夾旁邊的備份（見第四節）是另外的資料夾，要另外刪。解除安裝刻意不刪資料夾：「移除程式」跟「丟掉我的資料」是兩件事。整個資料夾的備份不會自動做，只有你自己建的才存在，而且放在你選的資料夾。這一版建這種備份、還原要用原始碼附的命令列工具；安裝版只能在設定 →「備份與資料」驗一份現成的備份。程式自己會複製資料的情況只有兩種，第四節都有寫：App 更新改變了某個功能存資料的方式時（複本放在資料夾裡，升級成功後留 7 天就刪掉），以及你清除某個模組的資料、或退回它更新前的資料時（備份放在資料夾旁邊，留到你自己刪）。伺服器端沒有副本，所以也沒有「請開發者刪除」這件事。</p>
+  <p>在程式裡個別刪：設定 →「備份與資料」的「危險區」先按「試算」，看哪些產物內容已經沒有任何執行紀錄引用，再按「清掉」，確認後刪除；設定 →「外觀與主題」按「拿掉你的圖」，背景圖就刪掉。設定 →「功能模組」打開「顯示進階選項」之後，模組清單上還有兩個：停用中的功能模組有「清除資料…」，先列出會刪掉哪些東西、多大，第一次確認之後做第四節講的備份，第二次確認之後才刪；有些模組這一版還不能這樣清，例如 Tasks（它的紀錄跟程式其他部分共用一個資料庫），程式會講原因。「刪掉」可以把更新前的資料（更新後留著的那一份）確認後直接刪掉，不用等 7 天。</p>
+  <p>內建的功能模組沒辦法單獨解除安裝，因為它的程式就是本程式的一部分；停用它就等於解除安裝。資料會留在資料夾裡（那一列會標「資料還在」和大小），再啟用就讀得回來。解除安裝套件會刪掉它的各個版本和原檔；用主題包套用過的外觀會留著，因為它存在 <code>ui.json</code>。裝過、移除過哪些套件的紀錄，以及每一次清除模組資料的紀錄，會留在 <code>packages\packages.db</code>，直到你刪掉資料夾。</p>
 
   <h3 id="zh-13">十三、你可以控制的事</h3>
   <ul>
@@ -569,7 +592,8 @@
     <li>通知和檢查更新預設都是關的，需要再打開。</li>
     <li>在設定 →「功能模組」關掉用不到的功能。</li>
     <li>在設定 →「工作區與專案」限制你另外建的每個工作區能用哪些功能模組、收哪幾層發行者的套件。</li>
-    <li>只裝你自己挑的套件檔，也可以隨時在設定 →「功能模組」的「套件」停用或解除安裝。</li>
+    <li>只裝你自己挑的套件（從硬碟挑的檔，或套件目錄上的），也可以隨時在設定 →「功能模組」→「顯示進階選項」→「套件」停用或解除安裝。套件目錄只有在你按「抓目錄」或「看安裝規劃」時才會連網。</li>
+    <li>在設定 →「功能模組」→「顯示進階選項」的模組清單，用「清除資料…」清掉停用中的功能模組的資料，或用「刪掉」刪掉更新前留著的那一份。</li>
     <li>背景圖要不要用自己的，由你決定：從網址下載每次都要確認，按「拿掉你的圖」就刪掉存著的那一張。</li>
     <li>隨時打開設定 →「隱私與回報」，看你這一版<b>實際</b>算出來的結果：資料放在這台電腦的哪裡、哪些是加密的、哪幾種步驟會把東西送出這台機器。</li>
     <li>回報你認為不當的 AI 產出，而且在它被寫下來之前先看過整份內容。</li>
@@ -589,7 +613,7 @@
 </section>
 
 <footer>
-  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-23 · Publisher te56789<br>
+  ai-team-os Privacy Policy · ai-team-os 隱私權政策 · Last updated 2026-11-25 · Publisher te56789<br>
   This page is a product compliance document, not legal advice. ／ 本頁是產品合規文件，不等於法律意見。
 </footer>
 
